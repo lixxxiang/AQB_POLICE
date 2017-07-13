@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.cgwx.yyfwptz.lixiang.aqb_police.MainActivity">
+
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        app:srcCompat="@drawable/aptitle" />
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="出现警情"
+        android:textColor="#ffffff"
+        android:textSize="14dp"
+        android:layout_marginTop="11dp"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true" />
+
+    <ImageView
+        android:id="@+id/imageView9"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="11dp"
+        app:srcCompat="@drawable/apmid"
+        android:layout_below="@+id/textView"
+        android:layout_alignLeft="@+id/imageView"
+        android:layout_alignStart="@+id/imageView" />
+
+    <ImageView
+        android:id="@+id/imageView10"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:srcCompat="@drawable/apwhi"
+        android:layout_alignTop="@+id/imageView9"
+        android:layout_alignLeft="@+id/imageView"
+        android:layout_alignStart="@+id/imageView" />
+
+    <ImageView
+        android:id="@+id/imageView11"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="23dp"
+        app:srcCompat="@drawable/aploc"
+        android:layout_below="@+id/imageView"
+        android:layout_alignLeft="@+id/imageView9"
+        android:layout_alignStart="@+id/imageView9"
+        android:layout_marginLeft="21dp"
+        android:layout_marginStart="21dp" />
+
+    <TextView
+        android:id="@+id/alarmLocation"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="TextView"
+        android:layout_alignBottom="@+id/imageView11"
+        android:layout_toRightOf="@+id/imageView11"
+        android:layout_toEndOf="@+id/imageView11"
+        android:layout_marginLeft="12dp"
+        android:layout_marginStart="12dp" />
+
+    <ImageView
+        android:id="@+id/imageView12"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="42dp"
+        app:srcCompat="@drawable/apdis"
+        android:layout_below="@+id/imageView11"
+        android:layout_toLeftOf="@+id/alarmLocation"
+        android:layout_toStartOf="@+id/alarmLocation" />
+
+    <TextView
+        android:id="@+id/alarmDistance"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="TextView"
+        android:layout_alignBottom="@+id/imageView12"
+        android:layout_alignLeft="@+id/alarmLocation"
+        android:layout_alignStart="@+id/alarmLocation" />
+
+    <Button
+        android:id="@+id/accept"
+        android:background="@drawable/apans"
+        android:layout_width="263dp"
+        android:layout_height="40dp"
+        android:textSize="14dp"
+        android:textColor="#ffffff"
+        android:layout_below="@+id/imageView9"
+        android:layout_centerHorizontal="true"
+        android:text="接警，立刻赶到现场" />
+
+    <Button
+        android:id="@+id/decline"
+        android:layout_width="263dp"
+        android:layout_height="40dp"
+        android:textSize="14dp"
+        android:textColor="#ffffff"
+        android:background="@drawable/apgray"
+        android:text="不能接警"
+        android:layout_marginBottom="43dp"
+        android:layout_alignBottom="@+id/imageView10"
+        android:layout_alignLeft="@+id/accept"
+        android:layout_alignStart="@+id/accept" />
+
+
+</RelativeLayout>

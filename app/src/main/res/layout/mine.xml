@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/bg"
+    tools:context="com.cgwx.yyfwptz.lixiang.aqb_police.MainActivity">
+
+
+    <ImageView
+        android:id="@+id/imageView4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="11dp"
+        app:srcCompat="@drawable/miinfo"
+        android:layout_alignParentTop="true"
+        android:layout_alignLeft="@+id/quitt"
+        android:layout_alignStart="@+id/quitt" />
+
+    <ImageView
+        android:id="@+id/imageView5"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        app:srcCompat="@drawable/avatar"
+        android:layout_alignTop="@+id/imageView4"
+        android:layout_centerHorizontal="true" />
+
+    <TextView
+        android:id="@+id/pname"
+        android:layout_width="72dp"
+        android:layout_height="17dp"
+        android:layout_marginTop="12dp"
+        android:textSize="14dp"
+        android:gravity="center"
+        android:textColor="#ffffff"
+        android:text="dd"
+        android:layout_below="@+id/imageView5"
+        android:layout_alignLeft="@+id/textView9"
+        android:layout_alignStart="@+id/textView9" />
+
+    <ImageView
+        android:id="@+id/imageView7"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="21dp"
+        android:layout_marginEnd="36dp"
+        android:layout_marginRight="36dp"
+        app:srcCompat="@drawable/numl"
+        android:layout_alignBottom="@+id/imageView4"
+        android:layout_alignRight="@+id/imageView5"
+        android:layout_alignEnd="@+id/imageView5" />
+
+    <ImageView
+        android:id="@+id/imageView8"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="4dp"
+        android:layout_marginStart="4dp"
+        app:srcCompat="@drawable/numr"
+        android:layout_alignTop="@+id/imageView7"
+        android:layout_toRightOf="@+id/textView9"
+        android:layout_toEndOf="@+id/textView9" />
+
+    <TextView
+        android:id="@+id/textView9"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="10dp"
+        android:textColor="#ffffff"
+        android:text="警号"
+        android:layout_alignBottom="@+id/imageView7"
+        android:layout_marginBottom="5dp"
+        android:layout_marginLeft="5dp"
+        android:layout_alignLeft="@+id/imageView7"
+        android:layout_alignStart="@+id/imageView7" />
+
+    <TextView
+        android:id="@+id/poNo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="10dp"
+        android:textColor="#ffffff"
+        android:text=""
+        android:layout_alignBaseline="@+id/textView9"
+        android:layout_alignBottom="@+id/textView9"
+        android:layout_alignLeft="@+id/imageView8"
+        android:layout_marginLeft="6dp"
+        android:layout_alignStart="@+id/imageView8" />
+
+    <ImageView
+        android:id="@+id/imageView13"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:srcCompat="@drawable/mitel"
+        android:layout_below="@+id/imageView4"
+        android:layout_alignLeft="@+id/imageView4"
+        android:layout_alignStart="@+id/imageView4"
+        android:layout_marginTop="16dp" />
+
+    <TextView
+        android:id="@+id/textView14"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/imageView13"
+        android:layout_alignLeft="@+id/imageView13"
+        android:layout_alignStart="@+id/imageView13"
+        android:textSize="14dp"
+        android:textColor="#ffffff"
+        android:layout_marginBottom="13dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginStart="16dp"
+        android:text="手机号" />
+
+    <TextView
+        android:id="@+id/poTel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignEnd="@+id/imageView13"
+        android:layout_alignRight="@+id/imageView13"
+        android:layout_alignTop="@+id/textView14"
+        android:textSize="14dp"
+        android:textColor="#ffffff"
+        android:layout_marginEnd="36dp"
+        android:layout_marginRight="36dp"
+        android:text="TextView" />
+
+    <Button
+        android:id="@+id/quitt"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="11dp"
+        android:text="退出登录"
+        android:textSize="14dp"
+        android:textColor="#ffffff"
+        android:background="@drawable/btnred"
+        android:layout_below="@+id/imageView13"
+        android:layout_centerHorizontal="true" />
+</RelativeLayout>
