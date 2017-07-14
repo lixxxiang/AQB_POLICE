@@ -66,6 +66,8 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
+import static com.cgwx.yyfwptz.lixiang.aqb_police.ProcessActivity.index;
+
 
 /**
  * A simple {@link Fragment} subclass.
@@ -370,10 +372,15 @@ public class MainFragment extends Fragment {
         quit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (appear.VISIBLE == 0){
+                if(listenPolice.VISIBLE == 0 ){
+                    countdownTimer.cancel();
+                    countdownTimer.purge();
+                    countdownTimer = null;
+                }
+                if (appear.VISIBLE == 0) {
                     appear.setVisibility(View.INVISIBLE);
                 }
-                if (done.VISIBLE == 0){
+                if (done.VISIBLE == 0) {
                     done.setVisibility(View.INVISIBLE);
 
                 }
@@ -406,6 +413,9 @@ public class MainFragment extends Fragment {
                             @Override
                             public void run() {
                                 Log.e("return:", string);
+                                getAlarmtimer.cancel();
+                                getAlarmtimer.purge();
+                                getAlarmtimer = null;
 
                             }
                         });
@@ -588,6 +598,17 @@ public class MainFragment extends Fragment {
                                                                     Log.e("state:", "jujiechenggong");
                                                                     appear.setVisibility(View.INVISIBLE);
                                                                     done.setVisibility(View.VISIBLE);
+                                                                    Log.e("ssss", "aaaaa");
+                                                                    getAlarmtimer = new Timer();
+                                                                    getAlarmtimer.schedule(new TimerTask() {
+                                                                        @Override
+                                                                        public void run() {
+                                                                            // TODO Auto-generated method stub
+                                                                            Message message = new Message();
+                                                                            message.what = 1;
+                                                                            getAlarmhandler.sendMessage(message);
+                                                                        }
+                                                                    }, 1000, 1000);
                                                                 }
                                                             }
                                                         });
@@ -603,7 +624,7 @@ public class MainFragment extends Fragment {
                             alarmInfo = ga.getAlarmInfo();
                             alarmlocation.setText("位置： " + alarmInfo.getPoi() + " " + alarmInfo.getAddress());
                             dadd.setText(alarmInfo.getAddress());
-                            dpoi.setText("位置： "+alarmInfo.getPoi());
+                            dpoi.setText("位置： " + alarmInfo.getPoi());
 
 
                             BNRoutePlanNode sNode = new BNRoutePlanNode(myListener.longi, myListener.lati, "", null, BNRoutePlanNode.CoordinateType.GCJ02);      //新建两个坐标点
@@ -725,7 +746,6 @@ public class MainFragment extends Fragment {
                                     }, 1000, 1000);
 
 
-
                                 }
                             });
                             try {
@@ -733,7 +753,7 @@ public class MainFragment extends Fragment {
                             } catch (InterruptedException e) {
                                 e.printStackTrace();
                             }
-                            if(done.VISIBLE == 0)
+                            if (done.VISIBLE == 0)
                                 done.setVisibility(View.INVISIBLE);
                             appear.setVisibility(View.VISIBLE);
 
@@ -763,6 +783,28 @@ public class MainFragment extends Fragment {
 
         }
     };
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        Log.e("start", "start");
+        if (index == true) {
+            Log.e("ss", "ss");
+            getAlarmtimer = new Timer();
+            getAlarmtimer.schedule(new TimerTask() {
+                @Override
+                public void run() {
+                    // TODO Auto-generated method stub
+                    Message message = new Message();
+                    message.what = 1;
+                    getAlarmhandler.sendMessage(message);
+                }
+            }, 1000, 1000);
+        } else {
+            Log.e("ee", "ee");
+            index = true;
+        }
+    }
 
     private void searchRoute(BNRoutePlanNode sNode, BNRoutePlanNode eNode) {
 
@@ -809,8 +851,10 @@ public class MainFragment extends Fragment {
                 distance = duration;
                 alarmdistance.setText("距离： " + "" + duration + "米（差一个计算！）");
                 if (duration > 1000) {
+                    alarmdistance.setText("距离： " + "" + duration / 1000 + "千米");
                     ddis.setText("距离： " + duration / 1000 + "公里");
                 } else {
+                    alarmdistance.setText("距离： " + duration + "米");
                     ddis.setText("距离： " + duration + "米");
                 }
 

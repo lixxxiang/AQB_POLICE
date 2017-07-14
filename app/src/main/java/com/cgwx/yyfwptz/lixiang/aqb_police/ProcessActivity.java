@@ -93,7 +93,7 @@ public class ProcessActivity extends AppCompatActivity implements OnGetRoutePlan
     private static final int accuracyCircleFillColor = 0xAAFFFF88;
     private static final int accuracyCircleStrokeColor = 0xAA00FF00;
     public static final String POST_URL_COMPLETEALARM = "http://10.10.90.11:8086/mobile/police/completeAlarm";
-
+    public static boolean index = false;
     ImageView call;
 
     boolean isFirstLoc = true;
@@ -203,6 +203,7 @@ public class ProcessActivity extends AppCompatActivity implements OnGetRoutePlan
                                 if (ca.getMeta().equals("success")) {
                                     Log.e("state:", "报警成功");
                                     finish();
+                                    index = true;
                                 }
                             }
                         });
@@ -224,7 +225,7 @@ public class ProcessActivity extends AppCompatActivity implements OnGetRoutePlan
                         .startName("天安门").endName("百度大厦");
 
                 try {
-                    BaiduMapNavigation.openBaiduMapNavi(para, ProcessActivity.this);
+                    BaiduMapNavigation.openBaiduMapWalkNavi(para, ProcessActivity.this);
                 } catch (BaiduMapAppNotSupportNaviException e) {
                     e.printStackTrace();
                     showDialog();
@@ -295,7 +296,8 @@ public class ProcessActivity extends AppCompatActivity implements OnGetRoutePlan
         MapStatusUpdate msu= MapStatusUpdateFactory.zoomTo(15.0f);
         mBaiduMap.setMapStatus(msu);
         getMyLocation();
-
+        mMapView.showScaleControl(false);
+        mMapView.showZoomControls(false);
 
     }
 
@@ -329,7 +331,7 @@ public class ProcessActivity extends AppCompatActivity implements OnGetRoutePlan
                 MapStatusUpdate msu= MapStatusUpdateFactory.newLatLng(latLng);
                 mBaiduMap.setMapStatus(msu);
                 isFirstIn=false;
-                Toast.makeText(context, bdLocation.getAddrStr(), Toast.LENGTH_SHORT).show();
+//                Toast.makeText(context, bdLocation.getAddrStr(), Toast.LENGTH_SHORT).show();
             }
         }
     }
