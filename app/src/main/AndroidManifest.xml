@@ -27,12 +27,24 @@
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.CALL_PHONE" />
 
+    <supports-screens
+        android:anyDensity="true"
+        android:largeScreens="true"
+        android:normalScreens="false"
+        android:resizeable="true"
+        android:smallScreens="true" />
+
+    <!-- OpenGLES 2.0 -->
+    <uses-feature android:glEsVersion="0x00020000" android:required="true" />
+
     <application
         android:allowBackup="true"
+        android:name="com.cgwx.yyfwptz.lixiang.AQBApplication"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
+        android:hardwareAccelerated="true"
         android:theme="@style/AppTheme">
         <service
             android:name="com.baidu.location.f"
@@ -45,17 +57,17 @@
             android:name="com.baidu.lbsapi.API_KEY"
             android:value="9t1l7N3ZBqGel9h8gTfrEncGATr5udHj" />
 
-        <activity android:name=".MainActivity">
+        <activity android:name=".MainActivity"  android:screenOrientation="portrait">
 
         </activity>
-        <activity android:name=".LoginActivity" >
+        <activity android:name=".LoginActivity"  android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".VCodeActivity" />
-        <activity android:name=".ProcessActivity"></activity>
+        <activity android:name=".VCodeActivity"  android:screenOrientation="portrait"/>
+        <activity android:name=".ProcessActivity"  android:screenOrientation="portrait"></activity>
     </application>
 
 </manifest>

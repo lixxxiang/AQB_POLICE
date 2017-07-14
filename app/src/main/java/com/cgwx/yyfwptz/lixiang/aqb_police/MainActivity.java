@@ -1,7 +1,10 @@
 package com.cgwx.yyfwptz.lixiang.aqb_police;
 
 import android.Manifest;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
@@ -31,6 +34,18 @@ public class MainActivity extends AppCompatActivity {
     String pname;
     String pid;
     String ptel;
+    private static final String LTAG = MainActivity.class.getSimpleName();
+
+
+    public class SDKReceiver extends BroadcastReceiver {
+
+        public void onReceive(Context context, Intent intent) {
+            String s = intent.getAction();
+            Log.d(LTAG, "action: " + s);
+        }
+    }
+
+    private SDKReceiver mReceiver;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,6 +78,12 @@ public class MainActivity extends AppCompatActivity {
 
 //        EventBus.getDefault().postSticky(new EventUtil("activity2发送消2息","activity2发送消息5","activity23发送消息"));
 
+        IntentFilter iFilter = new IntentFilter();
+        iFilter.addAction(SDKInitializer.SDK_BROADTCAST_ACTION_STRING_PERMISSION_CHECK_OK);
+        iFilter.addAction(SDKInitializer.SDK_BROADTCAST_ACTION_STRING_PERMISSION_CHECK_ERROR);
+        iFilter.addAction(SDKInitializer.SDK_BROADCAST_ACTION_STRING_NETWORK_ERROR);
+        mReceiver = new SDKReceiver();
+        registerReceiver(mReceiver, iFilter);
     }
     private void initViews(){
         mTabLayout = (TabLayout)findViewById(R.id.tabs);
@@ -91,6 +112,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        unregisterReceiver(mReceiver);
     }
 
 

@@ -43,16 +43,12 @@ import com.baidu.mapapi.search.route.RoutePlanSearch;
 import com.baidu.mapapi.search.route.TransitRouteResult;
 import com.baidu.mapapi.search.route.WalkingRouteResult;
 import com.baidu.navisdk.adapter.BNRoutePlanNode;
-import com.cgwx.yyfwptz.lixiang.entity.EventUtil;
 import com.cgwx.yyfwptz.lixiang.entity.acceptAlarm;
 import com.cgwx.yyfwptz.lixiang.entity.addAlarm;
 import com.cgwx.yyfwptz.lixiang.entity.getAlarm;
 import com.cgwx.yyfwptz.lixiang.entity.modifyPosition;
 import com.cgwx.yyfwptz.lixiang.entity.refuseAlarm;
 import com.google.gson.Gson;
-
-import org.greenrobot.eventbus.EventBus;
-import org.greenrobot.eventbus.Subscribe;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -134,7 +130,7 @@ public class MainFragment extends Fragment {
     private Timer getAlarmtimer;
     private Timer getStatustimer;
     Timer countdownTimer;
-    int count10sec = 11;
+    int count10sec;
     private TimerTask getAlarmtask;
     private TimerTask getStatustask;
 
@@ -353,7 +349,15 @@ public class MainFragment extends Fragment {
                  * roll
                  */
 
-                getAlarmtimer.schedule(getAlarmtask, 1000, 1000);
+                getAlarmtimer.schedule(new TimerTask() {
+                    @Override
+                    public void run() {
+                        // TODO Auto-generated method stub
+                        Message message = new Message();
+                        message.what = 1;
+                        getAlarmhandler.sendMessage(message);
+                    }
+                }, 1000, 1000);
             }
         });
 
@@ -373,7 +377,7 @@ public class MainFragment extends Fragment {
                     done.setVisibility(View.INVISIBLE);
 
                 }
-
+                listenPolice.setText("听警中");
                 state = "1";
                 listenPolice.setVisibility(View.INVISIBLE);
                 outpolice.setVisibility(View.VISIBLE);
@@ -473,14 +477,6 @@ public class MainFragment extends Fragment {
                 mBaiduMap.animateMapStatus(MapStatusUpdateFactory.newMapStatus(builder.build()));
             }
         }
-
-        @Override
-        public void onConnectHotSpotMessage(String s, int i) {
-
-        }
-
-        public void onReceivePoi(BDLocation poiLocation) {
-        }
     }
 
     Handler getAlarmhandler = new Handler() {
@@ -518,6 +514,7 @@ public class MainFragment extends Fragment {
     }
 
     public void getAlarmRoll() {
+        countdownTimer = new Timer();
         getAlarmgson = new Gson();
         getAlarmClient = new OkHttpClient.Builder()
                 .connectTimeout(10, TimeUnit.SECONDS)
@@ -547,7 +544,7 @@ public class MainFragment extends Fragment {
                         if (ga.getMeta().equals("success")) {
                             Log.e("jiedaole", "sdfs");
                             getAlarmtimer.cancel();
-
+                            count10sec = 11;
                             countdownTimer.schedule(new TimerTask() {
                                 @Override
                                 public void run() {
@@ -675,6 +672,9 @@ public class MainFragment extends Fragment {
                             declineP.setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View v) {
+                                    listenPolice.setText("听警中");
+                                    countdownTimer.cancel();
+                                    countdownTimer.purge();
                                     refuseAlarmgson = new Gson();
                                     refuseAlarmClient = new OkHttpClient.Builder()
                                             .connectTimeout(10, TimeUnit.SECONDS)
@@ -705,12 +705,25 @@ public class MainFragment extends Fragment {
                                                         Log.e("state:", "jujiechenggong");
                                                         appear.setVisibility(View.INVISIBLE);
                                                         done.setVisibility(View.VISIBLE);
+
                                                     }
                                                 }
                                             });
                                         }
 
                                     });
+
+                                    getAlarmtimer = new Timer();
+                                    getAlarmtimer.schedule(new TimerTask() {
+                                        @Override
+                                        public void run() {
+                                            // TODO Auto-generated method stub
+                                            Message message = new Message();
+                                            message.what = 1;
+                                            getAlarmhandler.sendMessage(message);
+                                        }
+                                    }, 1000, 1000);
+
 
 
                                 }
@@ -720,6 +733,8 @@ public class MainFragment extends Fragment {
                             } catch (InterruptedException e) {
                                 e.printStackTrace();
                             }
+                            if(done.VISIBLE == 0)
+                                done.setVisibility(View.INVISIBLE);
                             appear.setVisibility(View.VISIBLE);
 
 //                            getStatustimer = new Timer();
