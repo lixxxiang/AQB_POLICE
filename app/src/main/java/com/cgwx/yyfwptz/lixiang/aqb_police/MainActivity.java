@@ -18,11 +18,27 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.baidu.mapapi.SDKInitializer;
+import com.cgwx.yyfwptz.lixiang.entity.Constants;
 import com.cgwx.yyfwptz.lixiang.entity.EventUtil;
+import com.cgwx.yyfwptz.lixiang.entity.alarmInfo;
+import com.cgwx.yyfwptz.lixiang.entity.initStatus;
+import com.cgwx.yyfwptz.lixiang.entity.reserved;
+import com.cgwx.yyfwptz.lixiang.entity.sendMessage;
+import com.google.gson.Gson;
 
 import org.greenrobot.eventbus.EventBus;
 
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.concurrent.TimeUnit;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.FormBody;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -34,6 +50,8 @@ public class MainActivity extends AppCompatActivity {
     String pname;
     String pid;
     String ptel;
+    public static String status;
+
     private static final String LTAG = MainActivity.class.getSimpleName();
 
 
@@ -53,7 +71,7 @@ public class MainActivity extends AppCompatActivity {
         SDKInitializer.initialize(getApplicationContext());
 
         setContentView(R.layout.activity_main);
-        initViews();
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             // Android M Permission check
             if (this.checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -84,6 +102,7 @@ public class MainActivity extends AppCompatActivity {
         iFilter.addAction(SDKInitializer.SDK_BROADCAST_ACTION_STRING_NETWORK_ERROR);
         mReceiver = new SDKReceiver();
         registerReceiver(mReceiver, iFilter);
+        initViews();
     }
     private void initViews(){
         mTabLayout = (TabLayout)findViewById(R.id.tabs);
@@ -107,13 +126,21 @@ public class MainActivity extends AppCompatActivity {
         mTabLayout.setupWithViewPager(mViewPager);
         mTabLayout.setupWithViewPager(mViewPager,false);
         mTabLayout.setSelectedTabIndicatorColor(Color.parseColor("#ff9801"));
+
+        mViewPager.setCurrentItem(1);
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
         unregisterReceiver(mReceiver);
+        Log.e("distroy","a");
+
     }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
 
+    }
 }

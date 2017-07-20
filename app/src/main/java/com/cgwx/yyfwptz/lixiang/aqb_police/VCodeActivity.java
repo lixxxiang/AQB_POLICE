@@ -14,15 +14,14 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
-
-
+import android.widget.Toast;
+import com.cgwx.yyfwptz.lixiang.entity.Constants;
 import com.cgwx.yyfwptz.lixiang.entity.checkMessage;
 import com.cgwx.yyfwptz.lixiang.entity.policeInfo;
+import com.cgwx.yyfwptz.lixiang.entity.sendMessage;
 import com.google.gson.Gson;
-
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
-
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.FormBody;
@@ -36,7 +35,7 @@ public class VCodeActivity extends AppCompatActivity {
     Button back;
     TextView tel;
     Button login;
-    public static final String POST_URL = "http://10.10.90.11:8086/mobile/police/checkMessage";
+    public static final String POST_URL = Constants.prefix + "mobile/police/checkMessage";
 
 
     private OkHttpClient client;
@@ -66,6 +65,7 @@ public class VCodeActivity extends AppCompatActivity {
                 countback.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
+                        gson = new Gson();
                         client = new OkHttpClient.Builder()
                                 .connectTimeout(10, TimeUnit.SECONDS)
                                 .readTimeout(10, TimeUnit.SECONDS)
@@ -74,13 +74,13 @@ public class VCodeActivity extends AppCompatActivity {
                                 .add("telephone", pTel)
                                 .build();
                         Request requestPost = new Request.Builder()
-                                .url(LoginActivity.GET_URL)
+                                .url(LoginActivity.POST_URL)
                                 .post(requestBodyPost)
                                 .build();
                         client.newCall(requestPost).enqueue(new Callback() {
                             @Override
                             public void onFailure(Call call, IOException e) {
-
+                                Toast.makeText(VCodeActivity.this, "验证码获取失败", Toast.LENGTH_SHORT).show();
                             }
 
                             @Override
@@ -89,9 +89,12 @@ public class VCodeActivity extends AppCompatActivity {
                                 runOnUiThread(new Runnable() {
                                     @Override
                                     public void run() {
-                                        Log.e("return:", string);
-                                        handler.postDelayed(runnable, 1000);
-                                        count = 5;
+                                        Log.e("rerereturn:", string);
+                                        sendMessage userInfo = gson.fromJson(string, sendMessage.class);
+                                        if (userInfo.getMeta().equals("success")) {
+                                            handler.postDelayed(runnable, 1000);
+                                            count = 30;
+                                        }
                                     }
                                 });
                             }
@@ -178,6 +181,8 @@ public class VCodeActivity extends AppCompatActivity {
                                     bundle.putStringArray("pinfos", new String[]{pi.getPoliceId(), pi.getName(), pi.getTelephone()});
                                     intent.putExtras(bundle);
                                     startActivity(intent);
+                                }else{
+                                    Toast.makeText(VCodeActivity.this, "验证码错误", Toast.LENGTH_SHORT).show();
                                 }
                             }
                         });

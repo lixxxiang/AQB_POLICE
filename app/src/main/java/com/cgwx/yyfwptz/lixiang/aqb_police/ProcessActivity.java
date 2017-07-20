@@ -64,6 +64,7 @@ import com.baidu.mapapi.search.route.WalkingRoutePlanOption;
 import com.baidu.mapapi.search.route.WalkingRouteResult;
 import com.baidu.mapapi.utils.OpenClientUtil;
 import com.baidu.navisdk.adapter.BNRoutePlanNode;
+import com.cgwx.yyfwptz.lixiang.entity.Constants;
 import com.cgwx.yyfwptz.lixiang.entity.MyOrientationListener;
 import com.cgwx.yyfwptz.lixiang.entity.OverlayManager;
 import com.cgwx.yyfwptz.lixiang.entity.RouteLineAdapter;
@@ -84,7 +85,7 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
-public class ProcessActivity extends AppCompatActivity implements OnGetRoutePlanResultListener{
+public class ProcessActivity extends AppCompatActivity implements OnGetRoutePlanResultListener {
     LocationClient mLocClient;
     private UiSettings mUiSettings;
     public MyLocationListenner myListener = new MyLocationListenner();
@@ -92,7 +93,7 @@ public class ProcessActivity extends AppCompatActivity implements OnGetRoutePlan
     BitmapDescriptor mCurrentMarker;
     private static final int accuracyCircleFillColor = 0xAAFFFF88;
     private static final int accuracyCircleStrokeColor = 0xAA00FF00;
-    public static final String POST_URL_COMPLETEALARM = "http://10.10.90.11:8086/mobile/police/completeAlarm";
+    public static final String POST_URL_COMPLETEALARM = Constants.prefix + "mobile/police/completeAlarm";
     public static boolean index = false;
     ImageView call;
 
@@ -100,6 +101,7 @@ public class ProcessActivity extends AppCompatActivity implements OnGetRoutePlan
     BitmapDescriptor start;
     BitmapDescriptor end;
     String infos[];
+    String reserved[];
     Button navi;
     Button donePo;
     String string;
@@ -123,7 +125,7 @@ public class ProcessActivity extends AppCompatActivity implements OnGetRoutePlan
     private OkHttpClient completeAlarmClient;
     Gson completeAlarmgson;
 
-    private MapView mMapView=null;
+    private MapView mMapView = null;
     private BaiduMap mBaiduMap;
     private LocationClient mlocationClient;
     private MylocationListener mlistener;
@@ -140,7 +142,7 @@ public class ProcessActivity extends AppCompatActivity implements OnGetRoutePlan
         super.onCreate(savedInstanceState);
         SDKInitializer.initialize(getApplicationContext());
         setContentView(R.layout.activity_process);
-        this.context=this;
+        this.context = this;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             // Android M Permission check
             if (this.checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -157,7 +159,7 @@ public class ProcessActivity extends AppCompatActivity implements OnGetRoutePlan
         call.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent=new Intent(Intent.ACTION_CALL, Uri.parse("tel:"+ infos[9]));
+                Intent intent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + infos[9]));
                 startActivity(intent);
             }
         });
@@ -174,15 +176,26 @@ public class ProcessActivity extends AppCompatActivity implements OnGetRoutePlan
         donePo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                String policeid = "";
+                String alarmid = "";
+                if (infos == null) {
+                    policeid = reserved[8];
+                    alarmid = reserved[7];
+                } else {
+                    policeid = infos[8];
+                    alarmid = infos[7];
+                }
                 completeAlarmgson = new Gson();
                 completeAlarmClient = new OkHttpClient.Builder()
                         .connectTimeout(10, TimeUnit.SECONDS)
                         .readTimeout(10, TimeUnit.SECONDS)
                         .build();
+
                 RequestBody requestBodyPost2 = new FormBody.Builder()
-                        .add("policeId", infos[8])
-                        .add("alarmId", infos[7])
+                        .add("policeId", policeid)
+                        .add("alarmId", alarmid)
                         .build();
+                Log.e("policeId", policeid + alarmid);
                 Request requestPost2 = new Request.Builder()
                         .url(POST_URL_COMPLETEALARM)
                         .post(requestBodyPost2)
@@ -262,38 +275,71 @@ public class ProcessActivity extends AppCompatActivity implements OnGetRoutePlan
 
         Intent intent = getIntent();
         Bundle bundle = intent.getExtras();
+        reserved = bundle.getStringArray("reserved");
         infos = bundle.getStringArray("infos");
-        for (int i = 0; i < infos.length; i++) {
-            Log.e("dddd", infos[i]);
+
+        if (infos == null) {
+            for (int i = 0; i < reserved.length; i++) {
+                Log.e("dddd", reserved[i]);
+            }
+            initOverlay(reserved[0], reserved[1], reserved[2], reserved[3]);
+
+            if (Double.valueOf(reserved[6]) > 1000) {
+                distance.setText("" + Double.valueOf(reserved[6]) / 1000);
+                mOrkm.setText("千米");
+            } else {
+                distance.setText(reserved[6]);
+                mOrkm.setText("米");
+            }
+            poi.setText(reserved[4]);
+            if (reserved[5].indexOf("市") != -1) {
+                string = reserved[5].substring(reserved[5].indexOf("市") + 1, reserved[5].length());
+            }
+            address.setText(" " + string);
+
+            mSearch = RoutePlanSearch.newInstance();
+            mSearch.setOnGetRoutePlanResultListener(this);
+            PlanNode stNode = PlanNode.withLocation(new LatLng(Double.valueOf(reserved[0]), Double.valueOf(reserved[1])));
+            PlanNode enNode = PlanNode.withLocation(new LatLng(Double.valueOf(reserved[2]), Double.valueOf(reserved[3])));
+            mSearch.walkingSearch((new WalkingRoutePlanOption())
+                    .from(stNode).to(enNode));
+        } else {
+            for (int i = 0; i < infos.length; i++) {
+                Log.e("dddd", infos[i]);
+            }
+            initOverlay(infos[0], infos[1], infos[2], infos[3]);
+
+            if (Double.valueOf(infos[6]) > 1000) {
+                distance.setText("" + Double.valueOf(infos[6]) / 1000);
+                mOrkm.setText("千米");
+            } else {
+                distance.setText(infos[6]);
+                mOrkm.setText("米");
+            }
+            poi.setText(infos[4]);
+            if (infos[5].indexOf("市") != -1) {
+                string = infos[5].substring(infos[5].indexOf("市") + 1, infos[5].length());
+            }
+            address.setText(" " + string);
+
+            mSearch = RoutePlanSearch.newInstance();
+            mSearch.setOnGetRoutePlanResultListener(this);
+            PlanNode stNode = PlanNode.withLocation(new LatLng(Double.valueOf(infos[0]), Double.valueOf(infos[1])));
+            PlanNode enNode = PlanNode.withLocation(new LatLng(Double.valueOf(infos[2]), Double.valueOf(infos[3])));
+            mSearch.walkingSearch((new WalkingRoutePlanOption())
+                    .from(stNode).to(enNode));
         }
+
+
 //        Log.e("prooooo",intent.getStringExtra("startla")+intent.getStringExtra("startlo")+ intent.getStringExtra("endla")+intent.getStringExtra("endlo"));
 
-        initOverlay(infos[0], infos[1], infos[2], infos[3]);
 
-        if (Double.valueOf(infos[6]) > 1000) {
-            distance.setText("" + Double.valueOf(infos[6]) / 1000);
-            mOrkm.setText("千米");
-        } else {
-            distance.setText(infos[6]);
-            mOrkm.setText("米");
-        }
-        poi.setText(infos[4]);
-        if (infos[5].indexOf("市") != -1) {
-            string = infos[5].substring(infos[5].indexOf("市") + 1, infos[5].length());
-        }
-        address.setText(" " + string);
-
-        mSearch = RoutePlanSearch.newInstance();
-        mSearch.setOnGetRoutePlanResultListener(this);
-        PlanNode stNode = PlanNode.withLocation(new LatLng(Double.valueOf(infos[0]), Double.valueOf(infos[1])));
-        PlanNode enNode = PlanNode.withLocation(new LatLng(Double.valueOf(infos[2]),Double.valueOf(infos[3])));
-        mSearch.walkingSearch((new WalkingRoutePlanOption())
-                .from(stNode).to(enNode));
     }
+
     private void initView() {
-        mMapView= (MapView) findViewById(R.id.bmapView);
-        mBaiduMap=mMapView.getMap();
-        MapStatusUpdate msu= MapStatusUpdateFactory.zoomTo(15.0f);
+        mMapView = (MapView) findViewById(R.id.bmapView);
+        mBaiduMap = mMapView.getMap();
+        MapStatusUpdate msu = MapStatusUpdateFactory.zoomTo(15.0f);
         mBaiduMap.setMapStatus(msu);
         getMyLocation();
         mMapView.showScaleControl(false);
@@ -301,21 +347,20 @@ public class ProcessActivity extends AppCompatActivity implements OnGetRoutePlan
 
     }
 
-    public void getMyLocation()
-    {
-        LatLng latLng=new LatLng(mLatitude,mLongitude);
-        MapStatusUpdate msu= MapStatusUpdateFactory.newLatLng(latLng);
+    public void getMyLocation() {
+        LatLng latLng = new LatLng(mLatitude, mLongitude);
+        MapStatusUpdate msu = MapStatusUpdateFactory.newLatLng(latLng);
         mBaiduMap.setMapStatus(msu);
     }
 
-    public class MylocationListener implements BDLocationListener
-    {
-        private boolean isFirstIn=true;
+    public class MylocationListener implements BDLocationListener {
+        private boolean isFirstIn = true;
+
         @Override
         public void onReceiveLocation(BDLocation bdLocation) {
-            mLatitude= bdLocation.getLatitude();
-            mLongitude=bdLocation.getLongitude();
-            MyLocationData data= new MyLocationData.Builder()
+            mLatitude = bdLocation.getLatitude();
+            mLongitude = bdLocation.getLongitude();
+            MyLocationData data = new MyLocationData.Builder()
                     .direction(mCurrentX)//设定图标方向
                     .accuracy(bdLocation.getRadius())//getRadius 获取定位精度,默认值0.0f
                     .latitude(mLatitude)//百度纬度坐标
@@ -323,24 +368,23 @@ public class ProcessActivity extends AppCompatActivity implements OnGetRoutePlan
                     .build();
             mBaiduMap.setMyLocationData(data);
             MyLocationConfiguration configuration
-                    =new MyLocationConfiguration(locationMode,true,mIconLocation);
+                    = new MyLocationConfiguration(locationMode, true, mIconLocation);
             mBaiduMap.setMyLocationConfigeration(configuration);
-            if(isFirstIn)
-            {
-                LatLng latLng=new LatLng(bdLocation.getLatitude(),bdLocation.getLongitude());
-                MapStatusUpdate msu= MapStatusUpdateFactory.newLatLng(latLng);
+            if (isFirstIn) {
+                LatLng latLng = new LatLng(bdLocation.getLatitude(), bdLocation.getLongitude());
+                MapStatusUpdate msu = MapStatusUpdateFactory.newLatLng(latLng);
                 mBaiduMap.setMapStatus(msu);
-                isFirstIn=false;
+                isFirstIn = false;
 //                Toast.makeText(context, bdLocation.getAddrStr(), Toast.LENGTH_SHORT).show();
             }
         }
     }
+
     @Override
     protected void onStart() {
         super.onStart();
         mBaiduMap.setMyLocationEnabled(true);
-        if(!mlocationClient.isStarted())
-        {
+        if (!mlocationClient.isStarted()) {
             mlocationClient.start();
         }
         myOrientationListener.start();
@@ -355,24 +399,24 @@ public class ProcessActivity extends AppCompatActivity implements OnGetRoutePlan
     }
 
     private void initLocation() {
-        locationMode= MyLocationConfiguration.LocationMode.NORMAL;
-        mlocationClient=new LocationClient(this);
-        mlistener=new MylocationListener();
+        locationMode = MyLocationConfiguration.LocationMode.NORMAL;
+        mlocationClient = new LocationClient(this);
+        mlistener = new MylocationListener();
         mlocationClient.registerLocationListener(mlistener);
-        LocationClientOption mOption=new LocationClientOption();
+        LocationClientOption mOption = new LocationClientOption();
         mOption.setCoorType("bd09ll");
         mOption.setIsNeedAddress(true);
         mOption.setOpenGps(true);
-        int span=1000;
+        int span = 1000;
         mOption.setScanSpan(span);
         mlocationClient.setLocOption(mOption);
-        mIconLocation= BitmapDescriptorFactory
+        mIconLocation = BitmapDescriptorFactory
                 .fromResource(R.drawable.move);
-        myOrientationListener=new MyOrientationListener(context);
+        myOrientationListener = new MyOrientationListener(context);
         myOrientationListener.setOnOrientationListener(new MyOrientationListener.OnOrientationListener() {
             @Override
             public void onOrientationChanged(float x) {
-                mCurrentX=x;
+                mCurrentX = x;
             }
         });
     }
@@ -448,7 +492,7 @@ public class ProcessActivity extends AppCompatActivity implements OnGetRoutePlan
         if (result.error == SearchResult.ERRORNO.NO_ERROR) {
             nodeIndex = -1;
 
-            if (result.getRouteLines().size() > 1 ) {
+            if (result.getRouteLines().size() > 1) {
                 nowResultwalk = result;
 
                 MyTransitDlg myTransitDlg = new MyTransitDlg(ProcessActivity.this,
@@ -468,7 +512,7 @@ public class ProcessActivity extends AppCompatActivity implements OnGetRoutePlan
                 });
                 myTransitDlg.show();
 
-            } else if ( result.getRouteLines().size() == 1 ) {
+            } else if (result.getRouteLines().size() == 1) {
                 // 直接显示
                 route = result.getRouteLines().get(0);
                 WalkingRouteOverlay overlay = new MyWalkingRouteOverlay(mBaiduMap);
@@ -479,7 +523,7 @@ public class ProcessActivity extends AppCompatActivity implements OnGetRoutePlan
                 overlay.zoomToSpan();
 
             } else {
-                Log.d("route result", "结果数<0" );
+                Log.d("route result", "结果数<0");
                 return;
             }
 
@@ -547,8 +591,6 @@ public class ProcessActivity extends AppCompatActivity implements OnGetRoutePlan
     }
 
 
-
-
     private class MyWalkingRouteOverlay extends WalkingRouteOverlay {
 
         public MyWalkingRouteOverlay(BaiduMap baiduMap) {
@@ -582,7 +624,7 @@ public class ProcessActivity extends AppCompatActivity implements OnGetRoutePlan
 
         private List<? extends RouteLine> mtransitRouteLines;
         private ListView transitRouteList;
-        private  RouteLineAdapter mTransitAdapter;
+        private RouteLineAdapter mTransitAdapter;
 
         OnItemInDlgClickListener onItemInDlgClickListener;
 
@@ -590,11 +632,11 @@ public class ProcessActivity extends AppCompatActivity implements OnGetRoutePlan
             super(context, theme);
         }
 
-        public MyTransitDlg(Context context, List< ? extends RouteLine> transitRouteLines,  RouteLineAdapter.Type
+        public MyTransitDlg(Context context, List<? extends RouteLine> transitRouteLines, RouteLineAdapter.Type
                 type) {
-            this( context, 0);
+            this(context, 0);
             mtransitRouteLines = transitRouteLines;
-            mTransitAdapter = new  RouteLineAdapter( context, mtransitRouteLines , type);
+            mTransitAdapter = new RouteLineAdapter(context, mtransitRouteLines, type);
             requestWindowFeature(Window.FEATURE_NO_TITLE);
         }
 
@@ -606,18 +648,18 @@ public class ProcessActivity extends AppCompatActivity implements OnGetRoutePlan
             transitRouteList = (ListView) findViewById(R.id.transitList);
             transitRouteList.setAdapter(mTransitAdapter);
 
-            transitRouteList.setOnItemClickListener( new AdapterView.OnItemClickListener() {
+            transitRouteList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                    onItemInDlgClickListener.onItemClick( position);
+                    onItemInDlgClickListener.onItemClick(position);
                     dismiss();
 
                 }
             });
         }
 
-        public void setOnItemInDlgClickLinster( OnItemInDlgClickListener itemListener) {
+        public void setOnItemInDlgClickLinster(OnItemInDlgClickListener itemListener) {
             onItemInDlgClickListener = itemListener;
         }
 

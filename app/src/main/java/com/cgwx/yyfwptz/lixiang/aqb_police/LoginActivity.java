@@ -14,6 +14,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.cgwx.yyfwptz.lixiang.entity.Constants;
 import com.cgwx.yyfwptz.lixiang.entity.isTelAvailable;
 import com.cgwx.yyfwptz.lixiang.entity.sendMessage;
 import com.google.gson.Gson;
@@ -34,8 +35,8 @@ public class LoginActivity extends AppCompatActivity {
     Button getVcode;
     EditText tel;
     String pTel;
-    public static final String GET_URL = "http://10.10.90.11:8086/mobile/police/isTelAvailable?telephone=";
-    public static final String POST_URL = "http://10.10.90.11:8086/mobile/common/sendMessage";
+    public static final String GET_URL = Constants.prefix + "mobile/police/isTelAvailable?telephone=";
+    public static final String POST_URL = Constants.prefix + "mobile/common/sendMessage";
 
     private OkHttpClient client;
     Gson gson;
@@ -76,13 +77,13 @@ public class LoginActivity extends AppCompatActivity {
                     client.newCall(request).enqueue(new Callback() {
                         @Override
                         public void onFailure(Call call, IOException e) {
-
+                            Toast.makeText(LoginActivity.this, "a", Toast.LENGTH_SHORT).show();
                         }
 
                         @Override
                         public void onResponse(Call call, Response response) throws IOException {
                             final String string = response.body().string();
-                            Log.i("return :", "onResponse: " + string);
+                            Log.i("returrrrrn :", "onResponse: " + string);
 
                             runOnUiThread(new Runnable() {
                                 @Override
@@ -123,6 +124,8 @@ public class LoginActivity extends AppCompatActivity {
                                                 });
                                             }
                                         });
+                                    }else{
+                                            Toast.makeText(LoginActivity.this, "手机号不正确", Toast.LENGTH_SHORT).show();
                                     }
                                 }
                             });
