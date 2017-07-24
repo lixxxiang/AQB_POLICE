@@ -5,7 +5,7 @@ package com.cgwx.yyfwptz.lixiang.entity;
  */
 
 public class Constants {
-//    public static final String prefix = "http://202.111.178.10:28084/";
-    public static final String prefix = "http://10.10.90.11:8086/";
+    public static final String prefix = "http://202.111.178.10:28084/";
+//    public static final String prefix = "http://10.10.90.11:8086/";
 
 }

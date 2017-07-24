@@ -60,7 +60,6 @@
         android:id="@+id/alarmLocation"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="TextView"
         android:layout_alignBottom="@+id/imageView11"
         android:layout_toRightOf="@+id/imageView11"
         android:layout_toEndOf="@+id/imageView11"
@@ -81,7 +80,6 @@
         android:id="@+id/alarmDistance"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="TextView"
         android:layout_alignBottom="@+id/imageView12"
         android:layout_alignLeft="@+id/alarmLocation"
         android:layout_alignStart="@+id/alarmLocation" />

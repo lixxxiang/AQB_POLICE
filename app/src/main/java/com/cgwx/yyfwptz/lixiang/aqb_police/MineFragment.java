@@ -12,7 +12,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
-
+import com.google.gson.Gson;
+import okhttp3.OkHttpClient;
 import static android.content.Context.MODE_PRIVATE;
 import static com.cgwx.yyfwptz.lixiang.aqb_police.MainActivity.infos;
 
@@ -34,9 +35,15 @@ public class MineFragment extends Fragment {
     TextView pname;
     TextView pNO;
     Button quitt;
+    private OkHttpClient changeStateClient;
+    int serversLoadTimes = 0;
+    int maxLoadTimes = 19;
+    private OkHttpClient refuseAlarmClient;
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+    Gson refuseAlarmgson;
+    public static boolean quitting;
 
     private OnFragmentInteractionListener mListener;
 
@@ -60,6 +67,7 @@ public class MineFragment extends Fragment {
         args.putString(ARG_PARAM2, param2);
         fragment.setArguments(args);
         return fragment;
+
     }
 
     @Override
@@ -91,6 +99,55 @@ public class MineFragment extends Fragment {
         quitt.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                quitting = true;
+//                {
+//                    getAlarmtimer.cancel();
+//                    changeStateClient = new OkHttpClient.Builder()
+//                            .connectTimeout(10, TimeUnit.SECONDS)
+//                            .readTimeout(10, TimeUnit.SECONDS)
+//                            .build();
+//                    RequestBody requestBodyPost = new FormBody.Builder()
+//                            .add("state", "1")
+//                            .add("policeId", pid)
+//                            .build();
+//                    Request requestPost = new Request.Builder()
+//                            .url(POST_URL_CHANGESTATE)
+//                            .post(requestBodyPost)
+//                            .build();
+//                    changeStateClient.newCall(requestPost).enqueue(new Callback() {
+//                        @Override
+//                        public void onFailure(Call call, IOException e) {
+//                            if(e.getCause().equals(SocketTimeoutException.class) && serversLoadTimes<maxLoadTimes)//如果超时并未超过指定次数，则重新连接
+//                            {
+//                                serversLoadTimes++;
+//                                changeStateClient.newCall(call.request()).enqueue(this);
+//                            }else {
+//                                e.printStackTrace();
+//                                Log.e("chaoshi","sdfs");
+//                                Looper.prepare();
+//                                Toast.makeText(getActivity(), "连接服务器失败，请稍候再试", Toast.LENGTH_SHORT).show();
+//                                Looper.loop();
+//                            }
+//                        }
+//
+//                        @Override
+//                        public void onResponse(Call call, Response response) throws IOException {
+//                            final String string = response.body().string();
+//                            getActivity().runOnUiThread(new Runnable() {
+//                                @Override
+//                                public void run() {
+//                                    Log.e("CHANGESTATEreturn:", string);
+////                                getAlarmtimer.cancel();
+////                                getAlarmtimer.purge();
+////                                getAlarmtimer = null;
+//
+//                                }
+//                            });
+//                        }
+//
+//                    });
+//                }
+//                MainActivity.mainActivity.finish();
                 SharedPreferences sp = getActivity().getSharedPreferences("Puser", MODE_PRIVATE);
                 SharedPreferences.Editor editor = sp.edit();
                 editor.clear();

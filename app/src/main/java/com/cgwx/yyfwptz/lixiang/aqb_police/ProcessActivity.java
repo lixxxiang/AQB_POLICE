@@ -9,9 +9,11 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
+import android.os.Looper;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
@@ -74,6 +76,7 @@ import com.cgwx.yyfwptz.lixiang.entity.modifyPosition;
 import com.google.gson.Gson;
 
 import java.io.IOException;
+import java.net.SocketTimeoutException;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -135,6 +138,8 @@ public class ProcessActivity extends AppCompatActivity implements OnGetRoutePlan
     private float mCurrentX;
     private BitmapDescriptor mIconLocation;
     private MyOrientationListener myOrientationListener;
+    int serversLoadTimes = 0;
+    int maxLoadTimes = 19;
     private MyLocationConfiguration.LocationMode locationMode;
 
     @Override
@@ -203,6 +208,18 @@ public class ProcessActivity extends AppCompatActivity implements OnGetRoutePlan
                 completeAlarmClient.newCall(requestPost2).enqueue(new Callback() {
                     @Override
                     public void onFailure(Call call, IOException e) {
+                        if (e.getCause().equals(SocketTimeoutException.class) && serversLoadTimes < maxLoadTimes)//如果超时并未超过指定次数，则重新连接
+                        {
+                            serversLoadTimes++;
+                            completeAlarmClient.newCall(call.request()).enqueue(this);
+                        } else {
+                            e.printStackTrace();
+//                            WebApi.this.serversListEvent.getServers(null);
+                            Log.e("chaoshi", "sdfs");
+                            Looper.prepare();
+                            Toast.makeText(ProcessActivity.this, "连接服务器失败，请稍候再试", Toast.LENGTH_SHORT).show();
+                            Looper.loop();
+                        }
                     }
 
                     @Override
@@ -663,6 +680,15 @@ public class ProcessActivity extends AppCompatActivity implements OnGetRoutePlan
             onItemInDlgClickListener = itemListener;
         }
 
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK && event.getAction() == KeyEvent.ACTION_DOWN) {
+            Toast.makeText(getApplicationContext(), "请不要退出该页面，若接警完成，请点击“完成本次出警”返回。", Toast.LENGTH_SHORT).show();
+            return true;
+        }
+        return super.onKeyDown(keyCode, event);
     }
 
 

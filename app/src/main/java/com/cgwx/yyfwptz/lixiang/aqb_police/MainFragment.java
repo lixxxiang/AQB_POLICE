@@ -11,6 +11,7 @@ import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -147,7 +148,7 @@ public class MainFragment extends Fragment {
     private OnFragmentInteractionListener mListener;
     SimpleDateFormat formatter;
     Date curDate;
-    private Timer getAlarmtimer;
+    public static Timer getAlarmtimer;
     private Timer getAlarmtimer2;
 
     public static Timer countdownTimer;
@@ -211,12 +212,24 @@ public class MainFragment extends Fragment {
             modifyPositionClient.newCall(requestPost2).enqueue(new okhttp3.Callback() {
                 @Override
                 public void onFailure(Call call, IOException e) {
+//                    if(e.getCause().equals(SocketTimeoutException.class) && serversLoadTimes<maxLoadTimes)//如果超时并未超过指定次数，则重新连接
+//                    {
+//                        serversLoadTimes++;
+//                        modifyPositionClient.newCall(call.request()).enqueue(this);
+//                    }else {
+                        e.printStackTrace();
+//                            WebApi.this.serversListEvent.getServers(null);
+                        Log.e("chaoshi","sdfs");
+                        Looper.prepare();
+                        Toast.makeText(getActivity(), "连接服务器失败，请稍候再试", Toast.LENGTH_SHORT).show();
+                        Looper.loop();
+//                    }
                 }
 
                 @Override
                 public void onResponse(Call call, Response response) throws IOException {
                     final String string = response.body().string();
-                    getActivity().runOnUiThread(new Runnable() {
+                    MainActivity.mainActivity.runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
 //                            Log.e("modify", string);
@@ -230,8 +243,10 @@ public class MainFragment extends Fragment {
             });
 
             if (overtime > 60) {
-                getAlarmtimer.purge();
-                getAlarmtimer.cancel();
+                if (getAlarmtimer!= null){
+                    getAlarmtimer.purge();
+                    getAlarmtimer.cancel();
+                }
                 getAlarmtimer = null;
                 getAlarmtimer = new Timer();
                 getAlarmtimer.schedule(new TimerTask() {
@@ -253,17 +268,6 @@ public class MainFragment extends Fragment {
             if (getAlarmtimer != null) {
                 Log.e("TAG", "" + overtime + getAlarmtimer.toString());
             } else {
-//                getAlarmtimer = new Timer();
-//                getAlarmtimer.schedule(new TimerTask() {
-//                    @Override
-//                    public void run() {
-//                        // TODO Auto-generated method stub
-//                        Message message = new Message();
-//                        message.what = 1;
-//                        gahandler.sendMessage(message);
-//                        System.gc();
-//                    }
-//                }, 0, 1000);
                 Log.e("1getLLLLLLNULL", "dfdfsfd");
             }
         }
@@ -367,7 +371,9 @@ public class MainFragment extends Fragment {
         mLocClient.start();
         gahandler = new getAlarmhandler(this);
         outpolice.setText("请等待");
-        outpolice.setClickable(false);
+//        outpolice.setClickable(false);
+        outpolice.setEnabled(false);
+        Toast.makeText(getActivity(), "正在恢复您的状态，请稍后", Toast.LENGTH_LONG).show();
 
         /**
          * 状态判断
@@ -391,6 +397,18 @@ public class MainFragment extends Fragment {
                 initStatusclient.newCall(requestPost).enqueue(new Callback() {
                     @Override
                     public void onFailure(Call call, IOException e) {
+//                        if(e.getCause().equals(SocketTimeoutException.class) && serversLoadTimes<maxLoadTimes)//如果超时并未超过指定次数，则重新连接
+//                        {
+//                            serversLoadTimes++;
+//                            initStatusclient.newCall(call.request()).enqueue(this);
+//                        }else {
+                            e.printStackTrace();
+//                            WebApi.this.serversListEvent.getServers(null);
+                            Log.e("chaoshi","sdfs");
+                            Looper.prepare();
+                            Toast.makeText(getActivity(), "连接服务器失败，请稍候再试", Toast.LENGTH_SHORT).show();
+                            Looper.loop();
+//                        }
                     }
 
                     @Override
@@ -401,7 +419,7 @@ public class MainFragment extends Fragment {
                             public void run() {
                                 Log.e("return:", string);
                                 outpolice.setText("出警");
-                                outpolice.setClickable(true);
+                                outpolice.setEnabled(true);
                                 initStatus is = gson.fromJson(string, initStatus.class);
                                 if (is.getState().equals("1")) {
                                     Log.e("initStatus", "1");
@@ -436,6 +454,18 @@ public class MainFragment extends Fragment {
                                     changeStateClient.newCall(requestPost).enqueue(new Callback() {
                                         @Override
                                         public void onFailure(Call call, IOException e) {
+//                                            if(e.getCause().equals(SocketTimeoutException.class) && serversLoadTimes<maxLoadTimes)//如果超时并未超过指定次数，则重新连接
+//                                            {
+//                                                serversLoadTimes++;
+//                                                changeStateClient.newCall(call.request()).enqueue(this);
+//                                            }else {
+                                                e.printStackTrace();
+//                            WebApi.this.serversListEvent.getServers(null);
+                                                Log.e("chaoshi","sdfs");
+                                                Looper.prepare();
+                                                Toast.makeText(getActivity(), "连接服务器失败，请稍候再试", Toast.LENGTH_SHORT).show();
+                                                Looper.loop();
+//                                            }
                                         }
 
                                         @Override
@@ -496,6 +526,8 @@ public class MainFragment extends Fragment {
                                     }, 2000);
                                 } else if (is.getState().equals("4")) {
                                     Log.e("initStatus", "4");
+                                    outpolice.setEnabled(true);
+                                    outpolice.setText("出警");
                                 } else {
                                     Log.e("initStatus", "null");
                                 }
@@ -506,100 +538,6 @@ public class MainFragment extends Fragment {
             }
         }, 2000);
 
-
-//        if (MainActivity.status.equals("1")){
-//            countdownTimer = new Timer();
-////                count = 0;
-//            getAlarmtimer = new Timer();
-//            getAlarmtask = new TimerTask() {
-//                @Override
-//                public void run() {
-//                    // TODO Auto-generated method stub
-//                    Message message = new Message();
-//                    message.what = 1;
-//                    gahandler.sendMessage(message);
-//                }
-//            };
-//
-////                state = "2";
-//            stategson = new Gson();
-//            outpolice.setVisibility(View.INVISIBLE);
-//            listenPolice.setVisibility(View.VISIBLE);
-//            quit.setVisibility(View.VISIBLE);
-//
-//            changeStateClient = new OkHttpClient.Builder()
-//                    .connectTimeout(10, TimeUnit.SECONDS)
-//                    .readTimeout(10, TimeUnit.SECONDS)
-//                    .build();
-//            RequestBody requestBodyPost = new FormBody.Builder()
-//                    .add("state", "2")
-//                    .add("policeId", pid)
-//                    .build();
-//            Request requestPost = new Request.Builder()
-//                    .url(POST_URL_CHANGESTATE)
-//                    .post(requestBodyPost)
-//                    .build();
-//            changeStateClient.newCall(requestPost).enqueue(new Callback() {
-//                @Override
-//                public void onFailure(Call call, IOException e) {
-//                }
-//
-//                @Override
-//                public void onResponse(Call call, Response response) throws IOException {
-//                    final String string = response.body().string();
-//                    getActivity().runOnUiThread(new Runnable() {
-//                        @Override
-//                        public void run() {
-//                            addAlarm aA = stategson.fromJson(string, addAlarm.class);
-//                            if (aA.getMeta().equals("success")) {
-//                                Log.e("state:", "2,出警");
-//                            }
-//                        }
-//                    });
-//                }
-//
-//            });
-//
-//            getAlarmtimer.schedule(new TimerTask() {
-//                @Override
-//                public void run() {
-//                    // TODO Auto-generated method stub
-//                    Message message = new Message();
-//                    message.what = 1;
-//                    gahandler.sendMessage(message);
-//                    System.gc();
-//                }
-//            }, 0, 1000);
-//        }else if(status.equals("2")){
-//            Intent intent = new Intent(getActivity(), ProcessActivity.class);
-//            Bundle bundle = new Bundle();
-//            bundle.putStringArray("reserved", new String[]{
-//                    String.valueOf(myListener.lati),
-//                    String.valueOf(myListener.longi),
-////                    alarmInfo.getLatitude(),
-////                    alarmInfo.getLongitude(),
-////                    alarmInfo.getPoi(),
-////                    alarmInfo.getAddress(),
-////                    "" + distance,
-////                    alarmInfo.getAlarmId(),
-////                    pid,
-////                    aa.getCivilianTel()
-//                    MainActivity.res.getLatitude(),
-//                    MainActivity.res.getLongitude(),
-//                    MainActivity.res.getPoi(),
-//                    MainActivity.res.getAddress(),
-//                    "" + distance,
-//                    MainActivity.res.getAlarmId(),
-//                    pid,
-//                    MainActivity.res.getCivilianTelephone()
-//            });
-//            intent.putExtras(bundle);
-//            startActivity(intent);
-//        }else if(status.equals("4")){
-//            // 无处理
-//        }else{
-//            //
-//        }
 
         /**
          * 点击出警
@@ -627,7 +565,7 @@ public class MainFragment extends Fragment {
                 outpolice.setVisibility(View.INVISIBLE);
                 listenPolice.setVisibility(View.VISIBLE);
                 quit.setVisibility(View.VISIBLE);
-
+                outpolice.setEnabled(true);
                 changeStateClient = new OkHttpClient.Builder()
                         .connectTimeout(10, TimeUnit.SECONDS)
                         .readTimeout(10, TimeUnit.SECONDS)
@@ -643,7 +581,19 @@ public class MainFragment extends Fragment {
                 changeStateClient.newCall(requestPost).enqueue(new Callback() {
                     @Override
                     public void onFailure(Call call, IOException e) {
-                    }
+//                        if(e.getCause().equals(SocketTimeoutException.class) && serversLoadTimes<maxLoadTimes)//如果超时并未超过指定次数，则重新连接
+//                        {
+//                            serversLoadTimes++;
+//                            changeStateClient.newCall(call.request()).enqueue(this);
+//                        }else {
+                            e.printStackTrace();
+//                            WebApi.this.serversListEvent.getServers(null);
+                            Log.e("chaoshi","sdfs");
+                            Looper.prepare();
+                            Toast.makeText(getActivity(), "连接服务器失败，请稍候再试", Toast.LENGTH_SHORT).show();
+                            Looper.loop();
+                        }
+//                    }
 
                     @Override
                     public void onResponse(Call call, Response response) throws IOException {
@@ -723,7 +673,19 @@ public class MainFragment extends Fragment {
                 changeStateClient.newCall(requestPost).enqueue(new Callback() {
                     @Override
                     public void onFailure(Call call, IOException e) {
-                    }
+//                        if(e.getCause().equals(SocketTimeoutException.class) && serversLoadTimes<maxLoadTimes)//如果超时并未超过指定次数，则重新连接
+//                        {
+//                            serversLoadTimes++;
+//                            changeStateClient.newCall(call.request()).enqueue(this);
+//                        }else {
+                            e.printStackTrace();
+//                            WebApi.this.serversListEvent.getServers(null);
+                            Log.e("chaoshi","sdfs");
+                            Looper.prepare();
+                            Toast.makeText(getActivity(), "连接服务器失败，请稍候再试", Toast.LENGTH_SHORT).show();
+                            Looper.loop();
+                        }
+//                    }
 
                     @Override
                     public void onResponse(Call call, Response response) throws IOException {
@@ -824,277 +786,379 @@ public class MainFragment extends Fragment {
 
     //volley发送post请
     private void volleypost() {
-//        String url = POST_URL_GETALARM;
-//        StringRequest request = new StringRequest(com.android.volley.Request.Method.POST, url, new com.android.volley.Response.Listener<String> (){
-//
-//            @Override
-//            public void onResponse(String s) {
-//
-//                Log.i("aa", "post请求成功" + s);
-//            }
-//        }, new com.android.volley.Response.ErrorListener() {
-//
-//            @Override
-//            public void onErrorResponse(VolleyError volleyError) {
-//                Log.i("aa", "post请求失败" + volleyError.toString());
-//            }
-//        }) {
-//            @Override
-//            protected Map<String, String> getParams() throws AuthFailureError {
-//                HashMap<String, String> map = new HashMap<>();
-//                map.put("policeId", pid);
-//                return map;
-//            }
-//        };
-//        request.setTag("volleypost");
-//        AQBApplication.getHttpQueue().add(request);
         if (requestQueue == null) {
             requestQueue = Volley.newRequestQueue(getActivity().getApplicationContext());
         }
-        HashMap<String, String> params = new HashMap<>();
-        params.put("policeId", pid);
-        com.android.volley.Request<JSONObject> request = new NormalPostRequest(POST_URL_GETALARM,
-                new com.android.volley.Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        getAlarm ga = getAlarmgson.fromJson(response.toString(), getAlarm.class);
-                        Log.d(TAG, "response -> " + ga.getMeta());
-                        if (ga.getMeta().equals("success")) {
-                            {
-                                if(isplaying){
-                                    stopVoice();
-                                }else{
-                                    playVoice(getContext());
-                                    isplaying = true;
-                                }
+        if (MineFragment.quitting) {
+            Log.e("not quitting", "en");
+            if (getAlarmtimer != null){
+                getAlarmtimer.cancel();
+                getAlarmtimer.purge();
+            }
+
+            getAlarmtimer = null;
+//            if (listenPolice.VISIBLE == 0) {
+//                countdownTimer.cancel();
+//                countdownTimer.purge();
+//                countdownTimer = null;
+//            }
+//            if (appear.VISIBLE == 0) {
+//                appear.setVisibility(View.INVISIBLE);
+//            }
+//            if (done.VISIBLE == 0) {
+//                done.setVisibility(View.INVISIBLE);
+//
+//            }
+//            listenPolice.setText("听警中");
+//            state = "1";
+//            listenPolice.setVisibility(View.INVISIBLE);
+//            outpolice.setVisibility(View.VISIBLE);
+//            quit.setVisibility(View.INVISIBLE);
+            changeStateClient = new OkHttpClient.Builder()
+                    .connectTimeout(10, TimeUnit.SECONDS)
+                    .readTimeout(10, TimeUnit.SECONDS)
+                    .build();
+            RequestBody requestBodyPost = new FormBody.Builder()
+                    .add("state", "1")
+                    .add("policeId", pid)
+                    .build();
+            Request requestPost = new Request.Builder()
+                    .url(POST_URL_CHANGESTATE)
+                    .post(requestBodyPost)
+                    .build();
+            changeStateClient.newCall(requestPost).enqueue(new Callback() {
+                @Override
+                public void onFailure(Call call, IOException e) {
+                    if (e.getCause().equals(SocketTimeoutException.class) && serversLoadTimes < maxLoadTimes)//如果超时并未超过指定次数，则重新连接
+                    {
+                        serversLoadTimes++;
+                        changeStateClient.newCall(call.request()).enqueue(this);
+                    } else {
+                        e.printStackTrace();
+//                            WebApi.this.serversListEvent.getServers(null);
+                        Log.e("chaoshi", "sdfs");
+                        Looper.prepare();
+                        Toast.makeText(getActivity(), "连接服务器失败，请稍候再试", Toast.LENGTH_SHORT).show();
+                        Looper.loop();
+                    }
+                }
+
+                @Override
+                public void onResponse(Call call, Response response) throws IOException {
+                    final String string = response.body().string();
+                    getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Log.e("CHANGESTATEreturn:", string);
+//                                getAlarmtimer.cancel();
+//                                getAlarmtimer.purge();
+//                                getAlarmtimer = null;
+                            if (listenPolice.VISIBLE == 0){
+                                listenPolice.setVisibility(View.INVISIBLE);
+                                quit.setVisibility(View.INVISIBLE);
+                                outpolice.setVisibility(View.VISIBLE);
+                            }
+
+                        }
+                    });
+                }
+
+            });
+        }else {
+            HashMap<String, String> params = new HashMap<>();
+            params.put("policeId", pid);
+            com.android.volley.Request<JSONObject> request = new NormalPostRequest(POST_URL_GETALARM,
+                    new com.android.volley.Response.Listener<JSONObject>() {
+                        @Override
+                        public void onResponse(JSONObject response) {
+                            getAlarm ga = getAlarmgson.fromJson(response.toString(), getAlarm.class);
+                            Log.d(TAG, "response -> " + ga.getMeta());
+                            if (ga.getMeta().equals("success")) {
+                                {
+//                                    if (isplaying) {
+//                                        stopVoice();
+//                                    } else {
+                                        playVoice(getContext());
+//                                        isplaying = true;
+//                                    }
 //                                playVoice(getContext());
 //                                stopVoice();
-                                getAlarmtimer.cancel();
-                                count10sec = 11;
-                                Log.e("count10",""+count10sec);
-                                countdownTimer.schedule(new TimerTask() {
-                                    @Override
-                                    public void run() {
-                                        getActivity().runOnUiThread(new Runnable() {      // UI thread
-                                            @Override
-                                            public void run() {
-                                                quit.setVisibility(View.INVISIBLE);
-                                                count10sec--;
-                                                listenPolice.setText("" + count10sec);
+                                    getAlarmtimer.cancel();
+                                    count10sec = 11;
+                                    Log.e("count10", "" + count10sec);
+                                    countdownTimer.schedule(new TimerTask() {
+                                        @Override
+                                        public void run() {
+                                            getActivity().runOnUiThread(new Runnable() {      // UI thread
+                                                @Override
+                                                public void run() {
+                                                    quit.setVisibility(View.INVISIBLE);
+                                                    count10sec--;
+                                                    listenPolice.setText("" + count10sec);
 
-                                                /**
-                                                 * 倒计时结束 相当于拒接
-                                                 */
-                                                if (count10sec < 1) {
-                                                    quit.setVisibility(View.VISIBLE);
-                                                    countdownTimer.cancel();
-                                                    countdownTimer.purge();
-                                                    countdownTimer = null;
-                                                    listenPolice.setText("听警中");
-                                                    refuseAlarmgson = new Gson();
-                                                    refuseAlarmClient = new OkHttpClient.Builder()
-                                                            .connectTimeout(10, TimeUnit.SECONDS)
-                                                            .readTimeout(10, TimeUnit.SECONDS)
-                                                            .build();
-                                                    RequestBody requestBodyPost = new FormBody.Builder()
-                                                            .add("alarmId", alarmInfo.getAlarmId())
-                                                            .add("policeId", pid)
-                                                            .build();
-                                                    Request requestPost = new Request.Builder()
-                                                            .url(POST_URL_REFUSEALARM)
-                                                            .post(requestBodyPost)
-                                                            .build();
-                                                    refuseAlarmClient.newCall(requestPost).enqueue(new Callback() {
-                                                        @Override
-                                                        public void onFailure(Call call, IOException e) {
+                                                    /**
+                                                     * 倒计时结束 相当于拒接
+                                                     */
+                                                    if (count10sec < 1) {
+                                                        quit.setVisibility(View.VISIBLE);
+                                                        if (countdownTimer != null){
+                                                            countdownTimer.cancel();
+                                                            countdownTimer.purge();
                                                         }
 
-                                                        @Override
-                                                        public void onResponse(Call call, Response response) throws IOException {
-                                                            final String string = response.body().string();
-                                                            getActivity().runOnUiThread(new Runnable() {
-                                                                @Override
-                                                                public void run() {
-                                                                    Log.e("getAlarm return", string);
-                                                                    refuseAlarm ra = refuseAlarmgson.fromJson(string, refuseAlarm.class);
-                                                                    if (ra.getMeta().equals("success")) {
+                                                        countdownTimer = null;
+                                                        listenPolice.setText("听警中");
+                                                        refuseAlarmgson = new Gson();
+                                                        refuseAlarmClient = new OkHttpClient.Builder()
+                                                                .connectTimeout(10, TimeUnit.SECONDS)
+                                                                .readTimeout(10, TimeUnit.SECONDS)
+                                                                .build();
+                                                        RequestBody requestBodyPost = new FormBody.Builder()
+                                                                .add("alarmId", alarmInfo.getAlarmId())
+                                                                .add("policeId", pid)
+                                                                .build();
+                                                        Request requestPost = new Request.Builder()
+                                                                .url(POST_URL_REFUSEALARM)
+                                                                .post(requestBodyPost)
+                                                                .build();
+                                                        refuseAlarmClient.newCall(requestPost).enqueue(new Callback() {
+                                                            @Override
+                                                            public void onFailure(Call call, IOException e) {
+                                                                if (e.getCause().equals(SocketTimeoutException.class) && serversLoadTimes < maxLoadTimes)//如果超时并未超过指定次数，则重新连接
+                                                                {
+                                                                    serversLoadTimes++;
+                                                                    refuseAlarmClient.newCall(call.request()).enqueue(this);
+                                                                } else {
+                                                                    e.printStackTrace();
+//                            WebApi.this.serversListEvent.getServers(null);
+                                                                    Log.e("chaoshi", "sdfs");
+                                                                    Looper.prepare();
+                                                                    Toast.makeText(getActivity(), "连接服务器失败，请稍候再试", Toast.LENGTH_SHORT).show();
+                                                                    Looper.loop();
+                                                                }
+                                                            }
+
+                                                            @Override
+                                                            public void onResponse(Call call, Response response) throws IOException {
+                                                                final String string = response.body().string();
+                                                                getActivity().runOnUiThread(new Runnable() {
+                                                                    @Override
+                                                                    public void run() {
+                                                                        Log.e("getAlarm return", string);
+                                                                        refuseAlarm ra = refuseAlarmgson.fromJson(string, refuseAlarm.class);
+                                                                        if (ra.getMeta().equals("success")) {
 
 //                                                                        stopVoice();
-                                                                        appear.setVisibility(View.INVISIBLE);
-                                                                        done.setVisibility(View.VISIBLE);
-                                                                        getAlarmtimer = new Timer();
-                                                                        getAlarmtimer.schedule(new TimerTask() {
-                                                                            @Override
-                                                                            public void run() {
-                                                                                // TODO Auto-generated method stub
-                                                                                Message message = new Message();
-                                                                                message.what = 1;
-                                                                                gahandler.sendMessage(message);
-                                                                                System.gc();
-                                                                            }
-                                                                        }, 0, 1000);
+                                                                            appear.setVisibility(View.INVISIBLE);
+                                                                            done.setVisibility(View.VISIBLE);
+                                                                            getAlarmtimer = new Timer();
+                                                                            getAlarmtimer.schedule(new TimerTask() {
+                                                                                @Override
+                                                                                public void run() {
+                                                                                    // TODO Auto-generated method stub
+                                                                                    Message message = new Message();
+                                                                                    message.what = 1;
+                                                                                    gahandler.sendMessage(message);
+                                                                                    System.gc();
+                                                                                }
+                                                                            }, 0, 1000);
+                                                                        }
                                                                     }
-                                                                }
-                                                            });
-                                                        }
+                                                                });
+                                                            }
 
+                                                        });
+                                                    }
+                                                }
+                                            });
+                                        }
+                                    }, 0, 1000);
+
+
+                                    alarmInfo = ga.getAlarmInfo();
+                                    alarmlocation.setText("位置： " + alarmInfo.getPoi() + " " + alarmInfo.getAddress().substring(alarmInfo.getAddress().indexOf("市") + 1, alarmInfo.getAddress().length()));
+                                    dadd.setText(alarmInfo.getAddress().substring(alarmInfo.getAddress().indexOf("市") + 1, alarmInfo.getAddress().length()));
+                                    dpoi.setText("位置： " + alarmInfo.getPoi());
+
+
+                                    BNRoutePlanNode sNode = new BNRoutePlanNode(myListener.longi, myListener.lati, "", null, BNRoutePlanNode.CoordinateType.GCJ02);      //新建两个坐标点
+                                    BNRoutePlanNode eNode = new BNRoutePlanNode(Double.valueOf(alarmInfo.getLongitude()), Double.valueOf(alarmInfo.getLatitude()), "", null, BNRoutePlanNode.CoordinateType.GCJ02);
+                                    searchRoute(sNode, eNode);
+
+                                    /**
+                                     * 点击接案
+                                     */
+                                    acceptP.setOnClickListener(new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View v) {
+                                            accpetAlarmgson = new Gson();
+                                            acceptAlarmClient = new OkHttpClient.Builder()
+                                                    .connectTimeout(10, TimeUnit.SECONDS)
+                                                    .readTimeout(10, TimeUnit.SECONDS)
+                                                    .build();
+                                            RequestBody requestBodyPost = new FormBody.Builder()
+                                                    .add("alarmId", alarmInfo.getAlarmId())
+                                                    .add("policeId", pid)
+                                                    .build();
+                                            Request requestPost = new Request.Builder()
+                                                    .url(POST_URL_ACCEPTALARM)
+                                                    .post(requestBodyPost)
+                                                    .build();
+                                            acceptAlarmClient.newCall(requestPost).enqueue(new Callback() {
+                                                @Override
+                                                public void onFailure(Call call, IOException e) {
+                                                    if (e.getCause().equals(SocketTimeoutException.class) && serversLoadTimes < maxLoadTimes)//如果超时并未超过指定次数，则重新连接
+                                                    {
+                                                        serversLoadTimes++;
+                                                        acceptAlarmClient.newCall(call.request()).enqueue(this);
+                                                    } else {
+                                                        e.printStackTrace();
+//                            WebApi.this.serversListEvent.getServers(null);
+                                                        Log.e("chaoshi", "sdfs");
+                                                        Looper.prepare();
+                                                        Toast.makeText(getActivity(), "连接服务器失败，请稍候再试", Toast.LENGTH_SHORT).show();
+                                                        Looper.loop();
+                                                    }
+                                                }
+
+                                                @Override
+                                                public void onResponse(Call call, Response response) throws IOException {
+                                                    final String string = response.body().string();
+                                                    getActivity().runOnUiThread(new Runnable() {
+                                                        @Override
+                                                        public void run() {
+                                                            Log.e("return:", string);
+                                                            acceptAlarm aa = accpetAlarmgson.fromJson(string, acceptAlarm.class);
+
+                                                            if (aa.getMeta().equals("success")) {
+                                                                Log.e("state:", "报警成功");
+                                                                getAlarmtimer.cancel();
+                                                                Intent intent = new Intent(getActivity(), ProcessActivity.class);
+                                                                Log.e("infos", "" + distance);
+                                                                Bundle bundle = new Bundle();
+                                                                bundle.putStringArray("infos", new String[]{
+                                                                        String.valueOf(myListener.lati),
+                                                                        String.valueOf(myListener.longi),
+                                                                        alarmInfo.getLatitude(),
+                                                                        alarmInfo.getLongitude(),
+                                                                        alarmInfo.getPoi(),
+                                                                        alarmInfo.getAddress(),
+                                                                        "" + distance,
+                                                                        alarmInfo.getAlarmId(),
+                                                                        pid,
+                                                                        aa.getCivilianTel()
+                                                                });
+                                                                intent.putExtras(bundle);
+                                                                startActivity(intent);
+//                                                        getAlarmtimer.cancel();
+                                                            }
+                                                        }
                                                     });
                                                 }
+                                            });
+                                        }
+                                    });
+
+
+                                    /**
+                                     * 点击拒接案情
+                                     */
+                                    declineP.setOnClickListener(new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View v) {
+
+                                            quit.setVisibility(View.VISIBLE);
+                                            listenPolice.setText("听警中");
+                                            ///crash
+                                            if (countdownTimer != null) {
+                                                countdownTimer.cancel();
+                                                countdownTimer.purge();
                                             }
-                                        });
-                                    }
-                                }, 0, 1000);
-
-
-                                alarmInfo = ga.getAlarmInfo();
-                                alarmlocation.setText("位置： " + alarmInfo.getPoi() + " " + alarmInfo.getAddress().substring(alarmInfo.getAddress().indexOf("市") + 1, alarmInfo.getAddress().length()));
-                                dadd.setText(alarmInfo.getAddress().substring(alarmInfo.getAddress().indexOf("市") + 1, alarmInfo.getAddress().length()));
-                                dpoi.setText("位置： " + alarmInfo.getPoi());
-
-
-                                BNRoutePlanNode sNode = new BNRoutePlanNode(myListener.longi, myListener.lati, "", null, BNRoutePlanNode.CoordinateType.GCJ02);      //新建两个坐标点
-                                BNRoutePlanNode eNode = new BNRoutePlanNode(Double.valueOf(alarmInfo.getLongitude()), Double.valueOf(alarmInfo.getLatitude()), "", null, BNRoutePlanNode.CoordinateType.GCJ02);
-                                searchRoute(sNode, eNode);
-
-                                /**
-                                 * 点击接案
-                                 */
-                                acceptP.setOnClickListener(new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View v) {
-                                        accpetAlarmgson = new Gson();
-                                        acceptAlarmClient = new OkHttpClient.Builder()
-                                                .connectTimeout(10, TimeUnit.SECONDS)
-                                                .readTimeout(10, TimeUnit.SECONDS)
-                                                .build();
-                                        RequestBody requestBodyPost = new FormBody.Builder()
-                                                .add("alarmId", alarmInfo.getAlarmId())
-                                                .add("policeId", pid)
-                                                .build();
-                                        Request requestPost = new Request.Builder()
-                                                .url(POST_URL_ACCEPTALARM)
-                                                .post(requestBodyPost)
-                                                .build();
-                                        acceptAlarmClient.newCall(requestPost).enqueue(new Callback() {
-                                            @Override
-                                            public void onFailure(Call call, IOException e) {
-                                            }
-
-                                            @Override
-                                            public void onResponse(Call call, Response response) throws IOException {
-                                                final String string = response.body().string();
-                                                getActivity().runOnUiThread(new Runnable() {
-                                                    @Override
-                                                    public void run() {
-                                                        Log.e("return:", string);
-                                                        acceptAlarm aa = accpetAlarmgson.fromJson(string, acceptAlarm.class);
-
-                                                        if (aa.getMeta().equals("success")) {
-                                                            Log.e("state:", "报警成功");
-                                                            getAlarmtimer.cancel();
-                                                            Intent intent = new Intent(getActivity(), ProcessActivity.class);
-                                                            Log.e("infos", "" + distance);
-                                                            Bundle bundle = new Bundle();
-                                                            bundle.putStringArray("infos", new String[]{
-                                                                    String.valueOf(myListener.lati),
-                                                                    String.valueOf(myListener.longi),
-                                                                    alarmInfo.getLatitude(),
-                                                                    alarmInfo.getLongitude(),
-                                                                    alarmInfo.getPoi(),
-                                                                    alarmInfo.getAddress(),
-                                                                    "" + distance,
-                                                                    alarmInfo.getAlarmId(),
-                                                                    pid,
-                                                                    aa.getCivilianTel()
-                                                            });
-                                                            intent.putExtras(bundle);
-                                                            startActivity(intent);
-//                                                        getAlarmtimer.cancel();
-                                                        }
+                                            countdownTimer = null;
+                                            refuseAlarmgson = new Gson();
+                                            refuseAlarmClient = new OkHttpClient.Builder()
+                                                    .connectTimeout(10, TimeUnit.SECONDS)
+                                                    .readTimeout(10, TimeUnit.SECONDS)
+                                                    .build();
+                                            RequestBody requestBodyPost = new FormBody.Builder()
+                                                    .add("alarmId", alarmInfo.getAlarmId())
+                                                    .add("policeId", pid)
+                                                    .build();
+                                            Request requestPost = new Request.Builder()
+                                                    .url(POST_URL_REFUSEALARM)
+                                                    .post(requestBodyPost)
+                                                    .build();
+                                            refuseAlarmClient.newCall(requestPost).enqueue(new Callback() {
+                                                @Override
+                                                public void onFailure(Call call, IOException e) {
+                                                    if (e.getCause().equals(SocketTimeoutException.class) && serversLoadTimes < maxLoadTimes)//如果超时并未超过指定次数，则重新连接
+                                                    {
+                                                        serversLoadTimes++;
+                                                        refuseAlarmClient.newCall(call.request()).enqueue(this);
+                                                    } else {
+                                                        e.printStackTrace();
+//                            WebApi.this.serversListEvent.getServers(null);
+                                                        Log.e("chaoshi", "sdfs");
+                                                        Looper.prepare();
+                                                        Toast.makeText(getActivity(), "连接服务器失败，请稍候再试", Toast.LENGTH_SHORT).show();
+                                                        Looper.loop();
                                                     }
-                                                });
-                                            }
-                                        });
-                                    }
-                                });
+                                                }
 
-
-                                /**
-                                 * 点击拒接案情
-                                 */
-                                declineP.setOnClickListener(new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View v) {
-
-                                        quit.setVisibility(View.VISIBLE);
-                                        listenPolice.setText("听警中");
-                                        countdownTimer.cancel();
-                                        countdownTimer.purge();
-                                        countdownTimer = null;
-                                        refuseAlarmgson = new Gson();
-                                        refuseAlarmClient = new OkHttpClient.Builder()
-                                                .connectTimeout(10, TimeUnit.SECONDS)
-                                                .readTimeout(10, TimeUnit.SECONDS)
-                                                .build();
-                                        RequestBody requestBodyPost = new FormBody.Builder()
-                                                .add("alarmId", alarmInfo.getAlarmId())
-                                                .add("policeId", pid)
-                                                .build();
-                                        Request requestPost = new Request.Builder()
-                                                .url(POST_URL_REFUSEALARM)
-                                                .post(requestBodyPost)
-                                                .build();
-                                        refuseAlarmClient.newCall(requestPost).enqueue(new Callback() {
-                                            @Override
-                                            public void onFailure(Call call, IOException e) {
-                                            }
-
-                                            @Override
-                                            public void onResponse(Call call, Response response) throws IOException {
-                                                final String string = response.body().string();
-                                                getActivity().runOnUiThread(new Runnable() {
-                                                    @Override
-                                                    public void run() {
-                                                        Log.e("return:", string);
-                                                        refuseAlarm ra = refuseAlarmgson.fromJson(string, refuseAlarm.class);
-                                                        if (ra.getMeta().equals("success")) {
-                                                            appear.setVisibility(View.INVISIBLE);
-                                                            done.setVisibility(View.VISIBLE);
-                                                            getAlarmtimer = new Timer();
-                                                            getAlarmtimer.schedule(new TimerTask() {
-                                                                @Override
-                                                                public void run() {
-                                                                    // TODO Auto-generated method stub
-                                                                    Message message = new Message();
-                                                                    message.what = 1;
-                                                                    gahandler.sendMessage(message);
-                                                                    System.gc();
-                                                                }
-                                                            }, 0, 1000);
+                                                @Override
+                                                public void onResponse(Call call, Response response) throws IOException {
+                                                    final String string = response.body().string();
+                                                    getActivity().runOnUiThread(new Runnable() {
+                                                        @Override
+                                                        public void run() {
+                                                            Log.e("return:", string);
+                                                            refuseAlarm ra = refuseAlarmgson.fromJson(string, refuseAlarm.class);
+                                                            if (ra.getMeta().equals("success")) {
+                                                                appear.setVisibility(View.INVISIBLE);
+                                                                done.setVisibility(View.VISIBLE);
+                                                                getAlarmtimer = new Timer();
+                                                                getAlarmtimer.schedule(new TimerTask() {
+                                                                    @Override
+                                                                    public void run() {
+                                                                        // TODO Auto-generated method stub
+                                                                        Message message = new Message();
+                                                                        message.what = 1;
+                                                                        gahandler.sendMessage(message);
+                                                                        System.gc();
+                                                                    }
+                                                                }, 0, 1000);
+                                                            }
                                                         }
-                                                    }
-                                                });
-                                            }
+                                                    });
+                                                }
 
-                                        });
-                                    }
-                                });
+                                            });
+                                        }
+                                    });
 
-                                if (done.VISIBLE == 0)
-                                    done.setVisibility(View.INVISIBLE);
-                                appear.setVisibility(View.VISIBLE);
+                                    if (done.VISIBLE == 0)
+                                        done.setVisibility(View.INVISIBLE);
+                                    appear.setVisibility(View.VISIBLE);
+
+//                                    if (isplaying) {
+//                                        stopVoice();
+//                                    } else {
+//                                        playVoice(getContext());
+//                                        isplaying = true;
+//                                    }
+                                }
                             }
                         }
-                    }
-                }, new com.android.volley.Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Log.e(TAG, error.getMessage(), error);
-            }
-        }, params);
+                    }, new com.android.volley.Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    Log.e(TAG, error.getMessage(), error);
+                }
+            }, params);
 
-        requestQueue.add(request);
 
+            requestQueue.add(request);
+        }
 
     }
 
@@ -1102,283 +1166,6 @@ public class MainFragment extends Fragment {
         countdownTimer = new Timer();
         getAlarmgson = new Gson();
         volleypost();
-//        getAlarmClient = new OkHttpClient.Builder()
-//                .connectTimeout(10, TimeUnit.SECONDS)
-//                .readTimeout(10, TimeUnit.SECONDS)
-//                .build();
-//        RequestBody requestBodyPost2 = new FormBody.Builder()
-//                .add("policeId", pid)
-//                .build();
-//        Request requestPost2 = new Request.Builder()
-//                .url(POST_URL_GETALARM)
-//                .post(requestBodyPost2)
-//                .build();
-//        getAlarmClient.newCall(requestPost2).enqueue(new Callback() {
-//            @Override
-//            public void onFailure(Call call, IOException e) {
-////                if (getAlarmtimer != null){
-//////                    getAlarmtimer.purge();
-//////                    getAlarmtimer.cancel();
-////                    getAlarmtimer = null;
-////                }
-////                getAlarmtimer = new Timer();
-////                getAlarmtimer.schedule(new TimerTask() {
-////                    @Override
-////                    public void run() {
-////                        // TODO Auto-generated method stub
-////                        Message message = new Message();
-////                        message.what = 1;
-////                        gahandler.sendMessage(message);
-////                        System.gc();
-////                    }
-////                }, 0, 1000);
-//                Log.e("crash", "crash");
-//                getAlarmtimer.purge();
-//                getAlarmtimer.cancel();
-//
-//                Looper.prepare();
-//                Toast.makeText(getActivity(), "连接异常,请收工后重新听警", Toast.LENGTH_LONG).show();
-//                Looper.loop();
-////                getAlarmtimer2 = new Timer();
-////                gahandler.removeCallbacksAndMessages(null);
-////                getAlarmtimer2.schedule(new TimerTask() {
-////                    @Override
-////                    public void run() {
-////                        // TODO Auto-generated method stub
-////                        Message message = new Message();
-////                        message.what = 1;
-////                        gahandler.sendMessage(message);
-////                        System.gc();
-////                    }
-////                }, 0, 1000);
-//            }
-//
-//            @Override
-//            public void onResponse(Call call, Response response) throws IOException {
-//                final String string = response.body().string();
-//                getActivity().runOnUiThread(new Runnable() {
-//                    @Override
-//                    public void run() {
-//                        getAlarm ga = getAlarmgson.fromJson(string, getAlarm.class);
-//                        Log.e("是否有案情:", ga.getMeta());
-//                        if (ga.getMeta().equals("success")) {
-//                            getAlarmtimer.cancel();
-//                            count10sec = 11;
-//                            countdownTimer.schedule(new TimerTask() {
-//                                @Override
-//                                public void run() {
-//                                    getActivity().runOnUiThread(new Runnable() {      // UI thread
-//                                        @Override
-//                                        public void run() {
-//                                            quit.setVisibility(View.INVISIBLE);
-//                                            count10sec--;
-//                                            listenPolice.setText("" + count10sec);
-//
-//                                            /**
-//                                             * 倒计时结束 相当于拒接
-//                                             */
-//                                            if (count10sec < 1) {
-//                                                quit.setVisibility(View.VISIBLE);
-//                                                countdownTimer.cancel();
-//                                                countdownTimer.purge();
-//                                                countdownTimer = null;
-//                                                listenPolice.setText("听警中");
-//                                                refuseAlarmgson = new Gson();
-//                                                refuseAlarmClient = new OkHttpClient.Builder()
-//                                                        .connectTimeout(10, TimeUnit.SECONDS)
-//                                                        .readTimeout(10, TimeUnit.SECONDS)
-//                                                        .build();
-//                                                RequestBody requestBodyPost = new FormBody.Builder()
-//                                                        .add("alarmId", alarmInfo.getAlarmId())
-//                                                        .add("policeId", pid)
-//                                                        .build();
-//                                                Request requestPost = new Request.Builder()
-//                                                        .url(POST_URL_REFUSEALARM)
-//                                                        .post(requestBodyPost)
-//                                                        .build();
-//                                                refuseAlarmClient.newCall(requestPost).enqueue(new Callback() {
-//                                                    @Override
-//                                                    public void onFailure(Call call, IOException e) {
-//                                                    }
-//
-//                                                    @Override
-//                                                    public void onResponse(Call call, Response response) throws IOException {
-//                                                        final String string = response.body().string();
-//                                                        getActivity().runOnUiThread(new Runnable() {
-//                                                            @Override
-//                                                            public void run() {
-//                                                                Log.e("getAlarm return", string);
-//                                                                refuseAlarm ra = refuseAlarmgson.fromJson(string, refuseAlarm.class);
-//                                                                if (ra.getMeta().equals("success")) {
-//                                                                    appear.setVisibility(View.INVISIBLE);
-//                                                                    done.setVisibility(View.VISIBLE);
-//                                                                    getAlarmtimer = new Timer();
-//                                                                    getAlarmtimer.schedule(new TimerTask() {
-//                                                                        @Override
-//                                                                        public void run() {
-//                                                                            // TODO Auto-generated method stub
-//                                                                            Message message = new Message();
-//                                                                            message.what = 1;
-//                                                                            gahandler.sendMessage(message);
-//                                                                            System.gc();
-//                                                                        }
-//                                                                    }, 0, 1000);
-//                                                                }
-//                                                            }
-//                                                        });
-//                                                    }
-//
-//                                                });
-//                                            }
-//                                        }
-//                                    });
-//                                }
-//                            }, 0, 1000);
-//
-//
-//                            alarmInfo = ga.getAlarmInfo();
-//                            alarmlocation.setText("位置： " + alarmInfo.getPoi() + " " + alarmInfo.getAddress().substring(alarmInfo.getAddress().indexOf("市") + 1, alarmInfo.getAddress().length()));
-//                            dadd.setText(alarmInfo.getAddress().substring(alarmInfo.getAddress().indexOf("市") + 1, alarmInfo.getAddress().length()));
-//                            dpoi.setText("位置： " + alarmInfo.getPoi());
-//
-//
-//                            BNRoutePlanNode sNode = new BNRoutePlanNode(myListener.longi, myListener.lati, "", null, BNRoutePlanNode.CoordinateType.GCJ02);      //新建两个坐标点
-//                            BNRoutePlanNode eNode = new BNRoutePlanNode(Double.valueOf(alarmInfo.getLongitude()), Double.valueOf(alarmInfo.getLatitude()), "", null, BNRoutePlanNode.CoordinateType.GCJ02);
-//                            searchRoute(sNode, eNode);
-//
-//                            /**
-//                             * 点击接案
-//                             */
-//                            acceptP.setOnClickListener(new View.OnClickListener() {
-//                                @Override
-//                                public void onClick(View v) {
-//                                    accpetAlarmgson = new Gson();
-//                                    acceptAlarmClient = new OkHttpClient.Builder()
-//                                            .connectTimeout(10, TimeUnit.SECONDS)
-//                                            .readTimeout(10, TimeUnit.SECONDS)
-//                                            .build();
-//                                    RequestBody requestBodyPost = new FormBody.Builder()
-//                                            .add("alarmId", alarmInfo.getAlarmId())
-//                                            .add("policeId", pid)
-//                                            .build();
-//                                    Request requestPost = new Request.Builder()
-//                                            .url(POST_URL_ACCEPTALARM)
-//                                            .post(requestBodyPost)
-//                                            .build();
-//                                    acceptAlarmClient.newCall(requestPost).enqueue(new Callback() {
-//                                        @Override
-//                                        public void onFailure(Call call, IOException e) {
-//                                        }
-//
-//                                        @Override
-//                                        public void onResponse(Call call, Response response) throws IOException {
-//                                            final String string = response.body().string();
-//                                            getActivity().runOnUiThread(new Runnable() {
-//                                                @Override
-//                                                public void run() {
-//                                                    Log.e("return:", string);
-//                                                    acceptAlarm aa = accpetAlarmgson.fromJson(string, acceptAlarm.class);
-//
-//                                                    if (aa.getMeta().equals("success")) {
-//                                                        Log.e("state:", "报警成功");
-//                                                        getAlarmtimer.cancel();
-//                                                        Intent intent = new Intent(getActivity(), ProcessActivity.class);
-//                                                        Log.e("infos", "" + distance);
-//                                                        Bundle bundle = new Bundle();
-//                                                        bundle.putStringArray("infos", new String[]{
-//                                                                String.valueOf(myListener.lati),
-//                                                                String.valueOf(myListener.longi),
-//                                                                alarmInfo.getLatitude(),
-//                                                                alarmInfo.getLongitude(),
-//                                                                alarmInfo.getPoi(),
-//                                                                alarmInfo.getAddress(),
-//                                                                "" + distance,
-//                                                                alarmInfo.getAlarmId(),
-//                                                                pid,
-//                                                                aa.getCivilianTel()
-//                                                        });
-//                                                        intent.putExtras(bundle);
-//                                                        startActivity(intent);
-////                                                        getAlarmtimer.cancel();
-//                                                    }
-//                                                }
-//                                            });
-//                                        }
-//                                    });
-//                                }
-//                            });
-//
-//
-//                            /**
-//                             * 点击拒接案情
-//                             */
-//                            declineP.setOnClickListener(new View.OnClickListener() {
-//                                @Override
-//                                public void onClick(View v) {
-//
-//                                    quit.setVisibility(View.VISIBLE);
-//                                    listenPolice.setText("听警中");
-//                                    countdownTimer.cancel();
-//                                    countdownTimer.purge();
-//                                    countdownTimer = null;
-//                                    refuseAlarmgson = new Gson();
-//                                    refuseAlarmClient = new OkHttpClient.Builder()
-//                                            .connectTimeout(10, TimeUnit.SECONDS)
-//                                            .readTimeout(10, TimeUnit.SECONDS)
-//                                            .build();
-//                                    RequestBody requestBodyPost = new FormBody.Builder()
-//                                            .add("alarmId", alarmInfo.getAlarmId())
-//                                            .add("policeId", pid)
-//                                            .build();
-//                                    Request requestPost = new Request.Builder()
-//                                            .url(POST_URL_REFUSEALARM)
-//                                            .post(requestBodyPost)
-//                                            .build();
-//                                    refuseAlarmClient.newCall(requestPost).enqueue(new Callback() {
-//                                        @Override
-//                                        public void onFailure(Call call, IOException e) {
-//                                        }
-//
-//                                        @Override
-//                                        public void onResponse(Call call, Response response) throws IOException {
-//                                            final String string = response.body().string();
-//                                            getActivity().runOnUiThread(new Runnable() {
-//                                                @Override
-//                                                public void run() {
-//                                                    Log.e("return:", string);
-//                                                    refuseAlarm ra = refuseAlarmgson.fromJson(string, refuseAlarm.class);
-//                                                    if (ra.getMeta().equals("success")) {
-//                                                        appear.setVisibility(View.INVISIBLE);
-//                                                        done.setVisibility(View.VISIBLE);
-//                                                        getAlarmtimer = new Timer();
-//                                                        getAlarmtimer.schedule(new TimerTask() {
-//                                                            @Override
-//                                                            public void run() {
-//                                                                // TODO Auto-generated method stub
-//                                                                Message message = new Message();
-//                                                                message.what = 1;
-//                                                                gahandler.sendMessage(message);
-//                                                                System.gc();
-//                                                            }
-//                                                        }, 0, 1000);
-//                                                    }
-//                                                }
-//                                            });
-//                                        }
-//
-//                                    });
-//                                }
-//                            });
-//
-//                            if (done.VISIBLE == 0)
-//                                done.setVisibility(View.INVISIBLE);
-//                            appear.setVisibility(View.VISIBLE);
-//                        }
-//                    }
-//                });
-//            }
-//
-//        });
     }
 
 
@@ -1492,6 +1279,10 @@ public class MainFragment extends Fragment {
     @Override
     public void onDestroy() {
         super.onDestroy();
+        if(mLocClient != null) {
+            mLocClient.stop();
+        }
+        index = false;
 //        EventBus.getDefault().unregister(this);//取消注册
     }
 
@@ -1557,5 +1348,8 @@ public class MainFragment extends Fragment {
             mediaPlayer.stop();
         }
     }
+
+//
+
 
 }

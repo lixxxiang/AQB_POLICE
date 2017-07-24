@@ -174,7 +174,8 @@ public class VCodeActivity extends AppCompatActivity {
                                     editor.putString("pName", pName);
                                     Log.e("v", pTel + pId + pName);
                                     editor.commit(); //提交
-
+                                    MineFragment.quitting = false;
+                                    ProcessActivity.index = false;
                                     Log.e("vcodereturnddddd:", pi.getPoliceId() + pi.getName() + pi.getTelephone());
                                     Intent intent = new Intent(VCodeActivity.this, MainActivity.class);
                                     Bundle bundle = new Bundle();
@@ -223,4 +224,6 @@ public class VCodeActivity extends AppCompatActivity {
 
         }
     };
+
+
 }
