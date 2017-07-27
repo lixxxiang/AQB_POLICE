@@ -7,106 +7,122 @@
     tools:context="com.cgwx.yyfwptz.lixiang.aqb_police.MainActivity">
 
     <ImageView
-        android:id="@+id/imageView"
+        android:id="@+id/imageView21"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        app:srcCompat="@drawable/aptitle" />
-
-    <TextView
-        android:id="@+id/textView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="出现警情"
-        android:textColor="#ffffff"
-        android:textSize="14dp"
-        android:layout_marginTop="11dp"
+        android:layout_marginTop="25dp"
+        app:srcCompat="@drawable/appear"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true" />
 
-    <ImageView
-        android:id="@+id/imageView9"
+    <TextView
+        android:id="@+id/alarmLocation1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="11dp"
-        app:srcCompat="@drawable/apmid"
-        android:layout_below="@+id/textView"
-        android:layout_alignLeft="@+id/imageView"
-        android:layout_alignStart="@+id/imageView" />
+        android:layout_alignLeft="@+id/imageView21"
+        android:layout_alignStart="@+id/imageView21"
+        android:layout_alignTop="@+id/imageView21"
+        android:layout_marginLeft="30dp"
+        android:layout_marginStart="30dp"
+        android:layout_marginTop="87dp"
+        android:text="位置："
+        android:textColor="#5f5f5f"
+        android:textSize="12dp" />
 
-    <ImageView
-        android:id="@+id/imageView10"
+    <TextView
+        android:id="@+id/poiinfo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:srcCompat="@drawable/apwhi"
-        android:layout_alignTop="@+id/imageView9"
-        android:layout_alignLeft="@+id/imageView"
-        android:layout_alignStart="@+id/imageView" />
+        android:layout_alignLeft="@+id/alarmLocation1"
+        android:layout_alignStart="@+id/alarmLocation1"
+        android:layout_below="@+id/alarmLocation1"
+        android:layout_marginTop="30dp"
+        android:text="详情："
+        android:textColor="#5f5f5f"
+        android:textSize="12dp" />
 
-    <ImageView
-        android:id="@+id/imageView11"
+    <TextView
+        android:id="@+id/textView7"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="23dp"
-        app:srcCompat="@drawable/aploc"
-        android:layout_below="@+id/imageView"
-        android:layout_alignLeft="@+id/imageView9"
-        android:layout_alignStart="@+id/imageView9"
-        android:layout_marginLeft="21dp"
-        android:layout_marginStart="21dp" />
+        android:layout_alignLeft="@+id/poiinfo"
+        android:layout_alignStart="@+id/poiinfo"
+        android:layout_below="@+id/poiinfo"
+        android:layout_marginTop="31dp"
+        android:text="距离："
+        android:textColor="#5f5f5f"
+        android:textSize="12dp" />
 
     <TextView
         android:id="@+id/alarmLocation"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/imageView11"
-        android:layout_toRightOf="@+id/imageView11"
-        android:layout_toEndOf="@+id/imageView11"
-        android:layout_marginLeft="12dp"
-        android:layout_marginStart="12dp" />
+        android:layout_alignBaseline="@+id/alarmLocation1"
+        android:layout_alignBottom="@+id/alarmLocation1"
+        android:layout_centerHorizontal="true"
+        android:textSize="12dp"
+        android:textColor="#ff9801"
+         />
 
-    <ImageView
-        android:id="@+id/imageView12"
+    <TextView
+        android:id="@+id/poiinfoo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="42dp"
-        app:srcCompat="@drawable/apdis"
-        android:layout_below="@+id/imageView11"
-        android:layout_toLeftOf="@+id/alarmLocation"
-        android:layout_toStartOf="@+id/alarmLocation" />
+        android:textSize="12dp"
+        android:textColor="#ff9801"
+        android:layout_alignBaseline="@+id/poiinfo"
+        android:layout_alignBottom="@+id/poiinfo"
+        android:layout_alignLeft="@+id/alarmLocation"
+        android:layout_alignStart="@+id/alarmLocation" />
 
     <TextView
         android:id="@+id/alarmDistance"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/imageView12"
-        android:layout_alignLeft="@+id/alarmLocation"
-        android:layout_alignStart="@+id/alarmLocation" />
+        android:layout_alignBottom="@+id/textView7"
+        android:layout_alignLeft="@+id/poiinfoo"
+        android:layout_alignStart="@+id/poiinfoo"
+        android:textSize="12dp"
+        android:textColor="#ff9801"
+         />
+
+    <TextView
+        android:id="@+id/textView23"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_alignTop="@+id/imageView21"
+        android:layout_marginLeft="18dp"
+        android:layout_marginStart="18dp"
+        android:layout_marginTop="13dp"
+        android:text="出现警情"
+        android:textStyle="bold"
+        android:textColor="#ffffff"
+        android:textSize="14dp" />
 
     <Button
         android:id="@+id/accept"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="23dp"
         android:background="@drawable/apans"
-        android:layout_width="263dp"
-        android:layout_height="40dp"
+        android:text="接警，立刻赶往现场"
         android:textSize="14dp"
         android:textColor="#ffffff"
-        android:layout_below="@+id/imageView9"
-        android:layout_centerHorizontal="true"
-        android:text="接警，立刻赶到现场" />
+        android:layout_marginLeft="12dp"
+        android:layout_below="@+id/textView7"
+        android:layout_centerHorizontal="true" />
 
     <Button
         android:id="@+id/decline"
-        android:layout_width="263dp"
-        android:layout_height="40dp"
-        android:textSize="14dp"
-        android:textColor="#ffffff"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:background="@drawable/apgray"
         android:text="不能接警"
-        android:layout_marginBottom="43dp"
-        android:layout_alignBottom="@+id/imageView10"
+        android:textSize="14dp"
+        android:textColor="#ffffff"
+        android:layout_below="@+id/accept"
         android:layout_alignLeft="@+id/accept"
-        android:layout_alignStart="@+id/accept" />
-
-
+        android:layout_alignStart="@+id/accept"
+        android:layout_marginTop="14dp" />
 </RelativeLayout>

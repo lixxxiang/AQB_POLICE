@@ -337,7 +337,7 @@ public class ProcessActivity extends AppCompatActivity implements OnGetRoutePlan
             if (infos[5].indexOf("市") != -1) {
                 string = infos[5].substring(infos[5].indexOf("市") + 1, infos[5].length());
             }
-            address.setText(" " + string);
+            address.setText(" " + infos[5]);
 
             mSearch = RoutePlanSearch.newInstance();
             mSearch.setOnGetRoutePlanResultListener(this);
@@ -395,6 +395,8 @@ public class ProcessActivity extends AppCompatActivity implements OnGetRoutePlan
 //                Toast.makeText(context, bdLocation.getAddrStr(), Toast.LENGTH_SHORT).show();
             }
         }
+
+
     }
 
     @Override
@@ -603,6 +605,7 @@ public class ProcessActivity extends AppCompatActivity implements OnGetRoutePlan
                 mBaiduMap.animateMapStatus(MapStatusUpdateFactory.newMapStatus(builder.build()));
             }
         }
+
 
 
     }

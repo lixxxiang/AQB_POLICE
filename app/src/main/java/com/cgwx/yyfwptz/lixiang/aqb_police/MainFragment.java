@@ -157,6 +157,7 @@ public class MainFragment extends Fragment {
     private TimerTask getStatustask;
     TextView alarmlocation;
     TextView alarmdistance;
+    TextView poiInfo;
     TextView dpoi;
     TextView ddis;
     TextView dadd;
@@ -212,18 +213,11 @@ public class MainFragment extends Fragment {
             modifyPositionClient.newCall(requestPost2).enqueue(new okhttp3.Callback() {
                 @Override
                 public void onFailure(Call call, IOException e) {
-//                    if(e.getCause().equals(SocketTimeoutException.class) && serversLoadTimes<maxLoadTimes)//如果超时并未超过指定次数，则重新连接
-//                    {
-//                        serversLoadTimes++;
-//                        modifyPositionClient.newCall(call.request()).enqueue(this);
-//                    }else {
-                        e.printStackTrace();
-//                            WebApi.this.serversListEvent.getServers(null);
-                        Log.e("chaoshi","sdfs");
-                        Looper.prepare();
-                        Toast.makeText(getActivity(), "连接服务器失败，请稍候再试", Toast.LENGTH_SHORT).show();
-                        Looper.loop();
-//                    }
+                    e.printStackTrace();
+                    Log.e("chaoshi", "sdfs");
+                    Looper.prepare();
+                    Toast.makeText(getActivity(), "连接服务器失败，请稍候再试", Toast.LENGTH_SHORT).show();
+                    Looper.loop();
                 }
 
                 @Override
@@ -232,10 +226,6 @@ public class MainFragment extends Fragment {
                     MainActivity.mainActivity.runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-//                            Log.e("modify", string);
-//                            modifyPosition mp = stategson.fromJson(string, modifyPosition.class);
-//                            if (mp.getMeta().equals("success")) {
-//                            }
                         }
                     });
                 }
@@ -243,7 +233,7 @@ public class MainFragment extends Fragment {
             });
 
             if (overtime > 60) {
-                if (getAlarmtimer!= null){
+                if (getAlarmtimer != null) {
                     getAlarmtimer.purge();
                     getAlarmtimer.cancel();
                 }
@@ -266,12 +256,12 @@ public class MainFragment extends Fragment {
 
 
             if (getAlarmtimer != null) {
-                Log.e("TAG", "" + overtime + getAlarmtimer.toString());
+                Log.e("TAG", "轮询第" + overtime + "次，暂" +
+                        "无警情。（每60s更新timer）");
             } else {
                 Log.e("1getLLLLLLNULL", "dfdfsfd");
             }
         }
-
     }
 
     public MainFragment() {
@@ -330,6 +320,7 @@ public class MainFragment extends Fragment {
         dpoi = (TextView) getActivity().findViewById(R.id.dpoi);
         dadd = (TextView) getActivity().findViewById(R.id.dadr);
         ddis = (TextView) getActivity().findViewById(R.id.dd);
+        poiInfo = (TextView) getActivity().findViewById(R.id.poiinfoo);
         close = (Button) getActivity().findViewById(R.id.close);
         close.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -402,12 +393,12 @@ public class MainFragment extends Fragment {
 //                            serversLoadTimes++;
 //                            initStatusclient.newCall(call.request()).enqueue(this);
 //                        }else {
-                            e.printStackTrace();
+                        e.printStackTrace();
 //                            WebApi.this.serversListEvent.getServers(null);
-                            Log.e("chaoshi","sdfs");
-                            Looper.prepare();
-                            Toast.makeText(getActivity(), "连接服务器失败，请稍候再试", Toast.LENGTH_SHORT).show();
-                            Looper.loop();
+                        Log.e("chaoshi", "sdfs");
+                        Looper.prepare();
+                        Toast.makeText(getActivity(), "连接服务器失败，请稍候再试", Toast.LENGTH_SHORT).show();
+                        Looper.loop();
 //                        }
                     }
 
@@ -459,12 +450,12 @@ public class MainFragment extends Fragment {
 //                                                serversLoadTimes++;
 //                                                changeStateClient.newCall(call.request()).enqueue(this);
 //                                            }else {
-                                                e.printStackTrace();
+                                            e.printStackTrace();
 //                            WebApi.this.serversListEvent.getServers(null);
-                                                Log.e("chaoshi","sdfs");
-                                                Looper.prepare();
-                                                Toast.makeText(getActivity(), "连接服务器失败，请稍候再试", Toast.LENGTH_SHORT).show();
-                                                Looper.loop();
+                                            Log.e("chaoshi", "sdfs");
+                                            Looper.prepare();
+                                            Toast.makeText(getActivity(), "连接服务器失败，请稍候再试", Toast.LENGTH_SHORT).show();
+                                            Looper.loop();
 //                                            }
                                         }
 
@@ -586,13 +577,13 @@ public class MainFragment extends Fragment {
 //                            serversLoadTimes++;
 //                            changeStateClient.newCall(call.request()).enqueue(this);
 //                        }else {
-                            e.printStackTrace();
+                        e.printStackTrace();
 //                            WebApi.this.serversListEvent.getServers(null);
-                            Log.e("chaoshi","sdfs");
-                            Looper.prepare();
-                            Toast.makeText(getActivity(), "连接服务器失败，请稍候再试", Toast.LENGTH_SHORT).show();
-                            Looper.loop();
-                        }
+                        Log.e("chaoshi", "sdfs");
+                        Looper.prepare();
+                        Toast.makeText(getActivity(), "连接服务器失败，请稍候再试", Toast.LENGTH_SHORT).show();
+                        Looper.loop();
+                    }
 //                    }
 
                     @Override
@@ -678,13 +669,13 @@ public class MainFragment extends Fragment {
 //                            serversLoadTimes++;
 //                            changeStateClient.newCall(call.request()).enqueue(this);
 //                        }else {
-                            e.printStackTrace();
+                        e.printStackTrace();
 //                            WebApi.this.serversListEvent.getServers(null);
-                            Log.e("chaoshi","sdfs");
-                            Looper.prepare();
-                            Toast.makeText(getActivity(), "连接服务器失败，请稍候再试", Toast.LENGTH_SHORT).show();
-                            Looper.loop();
-                        }
+                        Log.e("chaoshi", "sdfs");
+                        Looper.prepare();
+                        Toast.makeText(getActivity(), "连接服务器失败，请稍候再试", Toast.LENGTH_SHORT).show();
+                        Looper.loop();
+                    }
 //                    }
 
                     @Override
@@ -768,6 +759,8 @@ public class MainFragment extends Fragment {
                 mBaiduMap.animateMapStatus(MapStatusUpdateFactory.newMapStatus(builder.build()));
             }
         }
+
+
     }
 
 //    Handler getAlarmhandler = new Handler() {
@@ -791,7 +784,7 @@ public class MainFragment extends Fragment {
         }
         if (MineFragment.quitting) {
             Log.e("not quitting", "en");
-            if (getAlarmtimer != null){
+            if (getAlarmtimer != null) {
                 getAlarmtimer.cancel();
                 getAlarmtimer.purge();
             }
@@ -853,7 +846,7 @@ public class MainFragment extends Fragment {
 //                                getAlarmtimer.cancel();
 //                                getAlarmtimer.purge();
 //                                getAlarmtimer = null;
-                            if (listenPolice.VISIBLE == 0){
+                            if (listenPolice.VISIBLE == 0) {
                                 listenPolice.setVisibility(View.INVISIBLE);
                                 quit.setVisibility(View.INVISIBLE);
                                 outpolice.setVisibility(View.VISIBLE);
@@ -864,7 +857,7 @@ public class MainFragment extends Fragment {
                 }
 
             });
-        }else {
+        } else {
             HashMap<String, String> params = new HashMap<>();
             params.put("policeId", pid);
             com.android.volley.Request<JSONObject> request = new NormalPostRequest(POST_URL_GETALARM,
@@ -878,7 +871,7 @@ public class MainFragment extends Fragment {
 //                                    if (isplaying) {
 //                                        stopVoice();
 //                                    } else {
-                                        playVoice(getContext());
+                                    playVoice(getContext());
 //                                        isplaying = true;
 //                                    }
 //                                playVoice(getContext());
@@ -901,7 +894,7 @@ public class MainFragment extends Fragment {
                                                      */
                                                     if (count10sec < 1) {
                                                         quit.setVisibility(View.VISIBLE);
-                                                        if (countdownTimer != null){
+                                                        if (countdownTimer != null) {
                                                             countdownTimer.cancel();
                                                             countdownTimer.purge();
                                                         }
@@ -930,7 +923,6 @@ public class MainFragment extends Fragment {
                                                                     refuseAlarmClient.newCall(call.request()).enqueue(this);
                                                                 } else {
                                                                     e.printStackTrace();
-//                            WebApi.this.serversListEvent.getServers(null);
                                                                     Log.e("chaoshi", "sdfs");
                                                                     Looper.prepare();
                                                                     Toast.makeText(getActivity(), "连接服务器失败，请稍候再试", Toast.LENGTH_SHORT).show();
@@ -976,8 +968,10 @@ public class MainFragment extends Fragment {
 
 
                                     alarmInfo = ga.getAlarmInfo();
-                                    alarmlocation.setText("位置： " + alarmInfo.getPoi() + " " + alarmInfo.getAddress().substring(alarmInfo.getAddress().indexOf("市") + 1, alarmInfo.getAddress().length()));
-                                    dadd.setText(alarmInfo.getAddress().substring(alarmInfo.getAddress().indexOf("市") + 1, alarmInfo.getAddress().length()));
+//                                    alarmlocation.setText("位置： " + alarmInfo.getPoi() + " " + );
+                                    alarmlocation.setText(alarmInfo.getPoi());
+                                    poiInfo.setText(alarmInfo.getAddress());
+                                    dadd.setText("详情：" + alarmInfo.getAddress());
                                     dpoi.setText("位置： " + alarmInfo.getPoi());
 
 
@@ -1111,7 +1105,7 @@ public class MainFragment extends Fragment {
                                                     getActivity().runOnUiThread(new Runnable() {
                                                         @Override
                                                         public void run() {
-                                                            Log.e("return:", string);
+                                                            Log.e("declinereturn:", string);
                                                             refuseAlarm ra = refuseAlarmgson.fromJson(string, refuseAlarm.class);
                                                             if (ra.getMeta().equals("success")) {
                                                                 appear.setVisibility(View.INVISIBLE);
@@ -1253,12 +1247,12 @@ public class MainFragment extends Fragment {
                 }
                 double duration = drivingRouteResult.getRouteLines().get(0).getDistance();
                 distance = duration;
-                alarmdistance.setText("距离： " + "" + duration + "米（差一个计算！）");
+//                alarmdistance.setText(duration + "米（差一个计算！）");
                 if (duration > 1000) {
-                    alarmdistance.setText("距离： " + "" + duration / 1000 + "千米");
+                    alarmdistance.setText(duration / 1000 + "千米");
                     ddis.setText("距离： " + duration / 1000 + "公里");
                 } else {
-                    alarmdistance.setText("距离： " + duration + "米");
+                    alarmdistance.setText(duration + "米");
                     ddis.setText("距离： " + duration + "米");
                 }
 
@@ -1279,7 +1273,7 @@ public class MainFragment extends Fragment {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        if(mLocClient != null) {
+        if (mLocClient != null) {
             mLocClient.stop();
         }
         index = false;

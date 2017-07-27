@@ -17,14 +17,16 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center_horizontal"
-        >
+        android:id="@+id/relativeLayout">
         <ImageView
             android:id="@+id/imageView14"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:srcCompat="@drawable/prtitle"
             android:gravity="center_horizontal"
-             />
+            android:layout_alignParentTop="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true" />
 
         <TextView
             android:id="@+id/textView4"
@@ -44,7 +46,7 @@
             android:layout_marginLeft="23dp"
             android:layout_marginStart="23dp"
             android:layout_marginTop="18dp"
-            android:text="请赶往"
+            android:text="位置："
             android:textColor="#5f5f5f"
             android:textSize="12dp"
             android:layout_below="@+id/textView4"
@@ -63,28 +65,29 @@
             android:text="poi" />
 
         <TextView
-            android:id="@+id/address"
+            android:id="@+id/address2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="#5f5f5f"
             android:textSize="12dp"
-            android:text="address"
-            android:layout_alignBaseline="@+id/poi"
             android:layout_alignBottom="@+id/poi"
             android:layout_toRightOf="@+id/poi"
-            android:layout_toEndOf="@+id/poi" />
+            android:layout_toEndOf="@+id/poi"
+            android:layout_alignTop="@+id/poi" />
 
         <TextView
             android:id="@+id/textView18"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="14dp"
-            android:text="距离你"
+            android:layout_marginTop="11dp"
+            android:text="距离："
             android:textColor="#5f5f5f"
             android:textSize="12dp"
-            android:layout_below="@+id/textView5"
+            android:layout_below="@+id/textView3"
             android:layout_alignLeft="@+id/textView5"
-            android:layout_alignStart="@+id/textView5" />
+            android:layout_alignStart="@+id/textView5"
+            android:layout_toLeftOf="@+id/poi"
+            android:layout_toStartOf="@+id/poi" />
 
         <TextView
             android:id="@+id/distance"
@@ -115,7 +118,7 @@
             android:layout_height="wrap_content"
             android:layout_alignEnd="@+id/imageView14"
             android:layout_alignRight="@+id/imageView14"
-            android:layout_alignTop="@+id/address"
+            android:layout_alignTop="@+id/address2"
             android:layout_marginEnd="47dp"
             android:layout_marginRight="47dp"
             app:srcCompat="@drawable/call" />
@@ -124,15 +127,28 @@
             android:id="@+id/textView21"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignBottom="@+id/mOrkm"
-            android:layout_alignEnd="@+id/imageView14"
-            android:layout_alignRight="@+id/imageView14"
-            android:layout_marginEnd="28dp"
-            android:layout_marginRight="28dp"
+
+            android:layout_marginEnd="29dp"
+            android:layout_marginRight="29dp"
             android:textColor="#5f5f5f"
             android:textSize="12dp"
-            android:text="呼叫报警人" />
+            android:text="呼叫报警人"
+            android:layout_below="@+id/textView3"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true" />
+
+        <TextView
+            android:id="@+id/textView3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="#5f5f5f"
+            android:textSize="12dp"
+            android:text="详情："
+            android:layout_below="@+id/call"
+            android:layout_alignLeft="@+id/textView18"
+            android:layout_alignStart="@+id/textView18" />
     </RelativeLayout>
+
 
     <Button
         android:id="@+id/donePo"
@@ -144,10 +160,7 @@
         android:textSize="14dp"
         android:textColor="#ffffff"
         android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_marginLeft="23dp"
-        android:layout_marginStart="23dp" />
+        android:layout_marginLeft="24dp"/>
 
     <Button
         android:id="@+id/navi"
@@ -159,10 +172,25 @@
         android:text="导航"
         android:layout_alignBaseline="@+id/donePo"
         android:layout_alignBottom="@+id/donePo"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
-        android:layout_marginRight="12dp"
-        android:layout_marginEnd="12dp" />
+        android:layout_toRightOf="@+id/donePo"
+        android:layout_toEndOf="@+id/donePo"
+        android:layout_marginLeft="11dp"
+        android:layout_marginRight="24dp"
+        />
+
+    <TextView
+        android:id="@+id/address"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="48dp"
+        android:text="address"
+        android:textSize="12dp"
+        android:layout_marginLeft="33dp"
+        android:layout_marginStart="33dp"
+        android:textColor="#ff9801"
+        android:layout_alignBottom="@+id/relativeLayout"
+        android:layout_alignLeft="@+id/donePo"
+        android:layout_alignStart="@+id/donePo" />
 
 
 </RelativeLayout>

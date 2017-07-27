@@ -6,114 +6,75 @@
     android:layout_height="match_parent"
     tools:context="com.cgwx.yyfwptz.lixiang.aqb_police.MainActivity">
 
-
     <ImageView
-        android:id="@+id/imageView15"
+        android:id="@+id/imageView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:srcCompat="@drawable/apwhi"
+        android:layout_marginTop="25dp"
+        app:srcCompat="@drawable/done"
         android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="34dp" />
-
-    <ImageView
-        android:id="@+id/imageView16"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:srcCompat="@drawable/doblue"
-        android:layout_alignTop="@+id/imageView15"
-        android:layout_alignLeft="@+id/imageView15"
-        android:layout_alignStart="@+id/imageView15" />
-
-    <ImageView
-        android:id="@+id/imageView17"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignTop="@+id/imageView15"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="87dp"
-        app:srcCompat="@drawable/apmid" />
-
-    <TextView
-        android:id="@+id/textView2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignTop="@+id/imageView15"
-        android:layout_centerHorizontal="true"
-        android:textSize="14dp"
-        android:textColor="#ffffff"
-        android:layout_marginTop="36dp"
-        android:textStyle="bold"
-        android:text="已被派给其他警员" />
-
-    <ImageView
-        android:id="@+id/imageView18"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="33dp"
-        android:layout_marginStart="33dp"
-        android:layout_marginTop="38dp"
-        app:srcCompat="@drawable/aploc"
-        android:layout_below="@+id/imageView16"
-        android:layout_alignLeft="@+id/imageView15"
-        android:layout_alignStart="@+id/imageView15" />
+        android:layout_centerHorizontal="true" />
 
     <TextView
         android:id="@+id/dpoi"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="TextView"
-        android:textSize="14dp"
+        android:layout_alignLeft="@+id/imageView"
+        android:layout_alignStart="@+id/imageView"
+        android:layout_alignTop="@+id/imageView"
+        android:layout_marginLeft="41dp"
+        android:text="asdfsdfasdfasdfasdfasdfasdfasdf"
+        android:layout_marginTop="167dp"
         android:textColor="#5f5f5f"
-        android:layout_alignBottom="@+id/imageView18"
-        android:layout_toRightOf="@+id/imageView18"
-        android:layout_toEndOf="@+id/imageView18"
-        android:layout_marginLeft="19dp"
-        android:layout_marginStart="19dp" />
-
-    <ImageView
-        android:id="@+id/imageView19"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:srcCompat="@drawable/apdis"
-        android:layout_alignBottom="@+id/imageView17"
-        android:layout_alignLeft="@+id/imageView18"
-        android:layout_alignStart="@+id/imageView18"
-        android:layout_marginBottom="38dp" />
+        android:textSize="12dp" />
 
     <TextView
         android:id="@+id/dadr"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="TextView"
-        android:textSize="14dp"
-        android:textColor="#9b9b9b"
-        android:layout_alignBaseline="@+id/dpoi"
-        android:layout_alignBottom="@+id/dpoi"
-        android:layout_toRightOf="@+id/dpoi"
-        android:layout_toEndOf="@+id/dpoi" />
+        android:layout_marginTop="19dp"
+        android:textColor="#5f5f5f"
+        android:textSize="12dp"
+        android:layout_below="@+id/dpoi"
+        android:layout_alignLeft="@+id/dpoi"
+        android:layout_alignStart="@+id/dpoi"
+        android:text="asdfsdfasdfasdfasdfasdfasdfasdf"
+         />
 
     <TextView
         android:id="@+id/dd"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="14dp"
         android:textColor="#5f5f5f"
-        android:text="TextView"
-        android:layout_alignBottom="@+id/imageView19"
-        android:layout_alignLeft="@+id/dpoi"
-        android:layout_alignStart="@+id/dpoi" />
+        android:textSize="12dp"
+        android:text="asdfsdfasdfasdfasdfasdfasdfasdf"
+        android:layout_below="@+id/dadr"
+        android:layout_alignLeft="@+id/dadr"
+        android:layout_alignStart="@+id/dadr"
+        android:layout_marginTop="18dp"
+        />
+
+    <TextView
+        android:id="@+id/textView13"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/imageView"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="40dp"
+        android:text="已被派给其他警员"
+        android:textColor="#ffffff"
+        android:textSize="14dp"
+        android:textStyle="bold" />
 
     <Button
         android:id="@+id/close"
         android:layout_width="16dp"
         android:layout_height="16dp"
         android:background="@drawable/close"
-        android:layout_alignTop="@+id/imageView15"
-        android:layout_alignRight="@+id/imageView15"
-        android:layout_alignEnd="@+id/imageView15"
-        android:layout_marginRight="11dp"
-        android:layout_marginEnd="11dp"
+        android:layout_alignTop="@+id/imageView"
+        android:layout_alignRight="@+id/imageView"
+        android:layout_alignEnd="@+id/imageView"
+        android:layout_marginRight="10dp"
+        android:layout_marginEnd="10dp"
         android:layout_marginTop="11dp" />
-
 </RelativeLayout>

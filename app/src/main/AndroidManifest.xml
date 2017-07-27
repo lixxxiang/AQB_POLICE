@@ -52,7 +52,7 @@
             android:value="48ae76de3f" />
         <meta-data
             android:name="com.baidu.lbsapi.API_KEY"
-            android:value="9t1l7N3ZBqGel9h8gTfrEncGATr5udHj" />
+            android:value="A3dGE3uce5tgNdzPwpNKLFZ5EQXZzbox" />
 
         <activity android:name=".MainActivity"  android:screenOrientation="portrait">
 

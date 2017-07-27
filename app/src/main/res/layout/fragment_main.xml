@@ -20,9 +20,9 @@
     <include layout="@layout/appear"
         android:id="@+id/appear"
         android:visibility="invisible"
-        android:layout_marginBottom="21dp"
+        android:layout_marginBottom="13dp"
         android:layout_height="wrap_content"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_above="@+id/outPolice"
         android:layout_centerHorizontal="true">
 
