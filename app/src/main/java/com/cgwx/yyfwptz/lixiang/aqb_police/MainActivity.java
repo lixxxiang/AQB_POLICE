@@ -1,6 +1,8 @@
 package com.cgwx.yyfwptz.lixiang.aqb_police;
 
 import android.Manifest;
+import android.app.Activity;
+import android.app.Application;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -19,6 +21,7 @@ import android.view.KeyEvent;
 import android.widget.Toast;
 
 import com.baidu.mapapi.SDKInitializer;
+import com.cgwx.yyfwptz.lixiang.entity.ActivityCollector;
 import com.cgwx.yyfwptz.lixiang.entity.Constants;
 import com.cgwx.yyfwptz.lixiang.entity.EventUtil;
 import com.cgwx.yyfwptz.lixiang.entity.alarmInfo;
@@ -47,14 +50,15 @@ public class MainActivity extends AppCompatActivity {
     private ViewPager mViewPager;
     private MainFragment mainFragment;
     private MineFragment mineFragment;
-    public static String infos[] ;
+    public static String infos[];
     String pname;
     String pid;
     String ptel;
     public static String status;
     public static MainActivity mainActivity;
     private static final String LTAG = MainActivity.class.getSimpleName();
-    long exitTime =0;
+    long exitTime = 0;
+    public boolean isForeground = false;
 
     public class SDKReceiver extends BroadcastReceiver {
 
@@ -70,7 +74,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         SDKInitializer.initialize(getApplicationContext());
-
+        ActivityCollector.addActivity(this);
         setContentView(R.layout.activity_main);
         mainActivity = this;
 
@@ -92,7 +96,7 @@ public class MainActivity extends AppCompatActivity {
 //        Intent intent = getIntent();
 //        Bundle bundle = intent.getExtras();
 //        infos = bundle.getStringArray("pinfos");
-        for (int i = 0; i < infos.length; i++){
+        for (int i = 0; i < infos.length; i++) {
             Log.e("dddd", infos[i]);
         }
 
@@ -106,9 +110,10 @@ public class MainActivity extends AppCompatActivity {
         registerReceiver(mReceiver, iFilter);
         initViews();
     }
-    private void initViews(){
-        mTabLayout = (TabLayout)findViewById(R.id.tabs);
-        mViewPager = (ViewPager)findViewById(R.id.viewpager);
+
+    private void initViews() {
+        mTabLayout = (TabLayout) findViewById(R.id.tabs);
+        mViewPager = (ViewPager) findViewById(R.id.viewpager);
         mainFragment = new MainFragment();
         mineFragment = new MineFragment();
 
@@ -120,13 +125,13 @@ public class MainActivity extends AppCompatActivity {
         titles.add("我的");
         titles.add("                              安全宝                              ");
 
-        FragmentsAdapter mAdapter = new FragmentsAdapter(getSupportFragmentManager(),fragments,titles);
+        FragmentsAdapter mAdapter = new FragmentsAdapter(getSupportFragmentManager(), fragments, titles);
         mTabLayout.addTab(mTabLayout.newTab().setText(titles.get(0)));
         mTabLayout.addTab(mTabLayout.newTab().setText(titles.get(1)));
 
         mViewPager.setAdapter(mAdapter);
         mTabLayout.setupWithViewPager(mViewPager);
-        mTabLayout.setupWithViewPager(mViewPager,false);
+        mTabLayout.setupWithViewPager(mViewPager, false);
         mTabLayout.setSelectedTabIndicatorColor(Color.parseColor("#ff9801"));
 
         mViewPager.setCurrentItem(1);
@@ -135,30 +140,27 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        ActivityCollector.removeActivity(this);
         unregisterReceiver(mReceiver);
-        Log.e("distroy","a");
+        Log.e("distroy", "a");
 
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-
+        isForeground = true;
     }
 
     @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event)
-    {
-        if(keyCode == KeyEvent.KEYCODE_BACK && event.getAction() == KeyEvent.ACTION_DOWN)
-        {
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK && event.getAction() == KeyEvent.ACTION_DOWN) {
 
-            if((System.currentTimeMillis()-exitTime) > 2000)  //System.currentTimeMillis()无论何时调用，肯定大于2000
+            if ((System.currentTimeMillis() - exitTime) > 2000)  //System.currentTimeMillis()无论何时调用，肯定大于2000
             {
-                Toast.makeText(getApplicationContext(), "再按一次退出程序",Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), "再按一次退出程序", Toast.LENGTH_SHORT).show();
                 exitTime = System.currentTimeMillis();
-            }
-            else
-            {
+            } else {
                 finish();
                 System.exit(0);
             }
@@ -166,5 +168,27 @@ public class MainActivity extends AppCompatActivity {
             return true;
         }
         return super.onKeyDown(keyCode, event);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        isForeground = false;
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        isForeground = true;
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        isForeground = true;
+    }
+
+    public boolean isForeground() {
+        return isForeground;
     }
 }
