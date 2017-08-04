@@ -11,6 +11,8 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.os.Build;
+import android.provider.Settings;
+import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
@@ -18,6 +20,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.view.View;
 import android.widget.Toast;
 
 import com.baidu.mapapi.SDKInitializer;
@@ -54,6 +57,7 @@ public class MainActivity extends AppCompatActivity {
     String pname;
     String pid;
     String ptel;
+    Snackbar snackbar;
     public static String status;
     public static MainActivity mainActivity;
     private static final String LTAG = MainActivity.class.getSimpleName();
@@ -77,6 +81,25 @@ public class MainActivity extends AppCompatActivity {
         ActivityCollector.addActivity(this);
         setContentView(R.layout.activity_main);
         mainActivity = this;
+        SharedPreferences setting = getSharedPreferences("isfirst", 0);
+        Boolean user_first = setting.getBoolean("FIRST",true);
+        if(user_first){//第一次
+            setting.edit().putBoolean("FIRST", false).apply();
+            snackbar = Snackbar.make(findViewById(R.id.main_content),"为了及时响应听警功能，请打开完全通知权限", Snackbar.LENGTH_INDEFINITE).setAction("点击设置\n(右滑取消)", new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    snackbar.dismiss();
+                    Intent intent = new Intent();
+                    intent.setAction("android.settings.APP_NOTIFICATION_SETTINGS");
+                    intent.putExtra("app_package", getPackageName());
+                    intent.putExtra("app_uid", getApplicationInfo().uid);
+                    startActivity(intent);
+                    return;
+                }
+            });
+            snackbar.setActionTextColor(Color.parseColor("#ff9801"));
+            snackbar.show();
+        }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             // Android M Permission check
